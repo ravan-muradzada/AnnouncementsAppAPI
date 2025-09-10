@@ -1,10 +1,13 @@
-﻿using Application.InternalServiceInterfaces;
+﻿using Application.ExternalServiceInterfaces;
+using Application.InternalServiceInterfaces;
 using Application.InternalServices;
 using Application.Mappings;
 using Domain.Entities;
 using Domain.RepositoryInterfaces;
+using Infrastructure.ExternalServices;
 using Infrastructure.Persistance;
 using Infrastructure.Repositories;
+using Infrastructure.Validators;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -35,7 +38,7 @@ namespace starter_project_template.StartupExtensions
             #region DbContext
             services.AddDbContext<ApplicationDbContext>(options =>
             {
-                options.UseSqlServer(configuration.GetConnectionString("DefaulConnection"));
+                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
             });
             #endregion
 
@@ -46,6 +49,7 @@ namespace starter_project_template.StartupExtensions
             })
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
+            services.AddScoped<IUserValidator<ApplicationUser>, IdentityUsernameValidator>();
             #endregion
 
             #region JWT
@@ -81,10 +85,15 @@ namespace starter_project_template.StartupExtensions
             services.AddAutoMapper(_ => { }, typeof(MappingProfile).Assembly);
             #endregion
 
-            #region Services
+            #region Internal Services
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IRefreshTokenService, RefreshTokenService>();
             services.AddScoped<ITwoFactorService, TwoFactorService>();
+            #endregion
+
+            #region External Services
+            services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<IAccessTokenService, AccessTokenService>();  
             #endregion
 
             #region Repositories
