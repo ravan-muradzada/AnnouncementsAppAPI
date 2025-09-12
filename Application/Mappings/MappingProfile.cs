@@ -1,4 +1,6 @@
-﻿using AutoMapper;
+﻿using Application.DTOs.UserProfile.Response;
+using AutoMapper;
+using Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +11,13 @@ namespace Application.Mappings
 {
     public class MappingProfile : Profile
     {
-        public MappingProfile() { }
+        public MappingProfile() { 
+            ConfigureUserProfileMappings();
+        }
+
+        private void ConfigureUserProfileMappings()
+        {
+            CreateMap<ApplicationUser, UserProfileResponse>();
+        }
     }
 }

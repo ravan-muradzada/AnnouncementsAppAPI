@@ -6,10 +6,7 @@ using Domain.CustomExceptions;
 using Domain.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
 using System.ComponentModel.DataAnnotations;
-using System.Security.Authentication;
-using System.Text.Encodings.Web;
 
 namespace Application.InternalServices
 {
@@ -264,3 +261,4 @@ namespace Application.InternalServices
         #endregion
     }
 }
+

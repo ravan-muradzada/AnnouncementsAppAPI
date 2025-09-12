@@ -12,5 +12,9 @@ namespace Domain.Entities
         public List<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
         public string? OTP {  get; set; }
         public DateTime? OTPExpirationTime { get; set; }
+        public string? NewEmailCandidate { get; set; }
+        public readonly int countOfAllowedChangeUsername = 3;
+        public int currentCountOfChange { get; set; } = 0;
+        public DateTime? LimitDate { get; set; }
     }
 }

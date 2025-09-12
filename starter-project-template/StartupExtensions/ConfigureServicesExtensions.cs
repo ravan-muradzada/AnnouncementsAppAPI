@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using StackExchange.Redis;
 using starter_project_template.Filters.ExceptionFilters;
 using System.Reflection.Metadata;
 using System.Text;
@@ -89,15 +90,26 @@ namespace starter_project_template.StartupExtensions
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IRefreshTokenService, RefreshTokenService>();
             services.AddScoped<ITwoFactorService, TwoFactorService>();
+            services.AddScoped<IUserProfileService, UserProfileService>();
             #endregion
 
             #region External Services
             services.AddScoped<IEmailService, EmailService>();
-            services.AddScoped<IAccessTokenService, AccessTokenService>();  
+            services.AddScoped<IAccessTokenService, AccessTokenService>();
+            #endregion
+
+            #region Redis
+            services.AddSingleton<IConnectionMultiplexer>(sp =>
+            {
+                var configuration = ConfigurationOptions.Parse("localhost:6379");
+                configuration.AbortOnConnectFail = false;
+                return ConnectionMultiplexer.Connect(configuration);
+            });
             #endregion
 
             #region Repositories
             services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+            services.AddScoped<IRedisRepository, RedisRepository>();
             #endregion
 
             return services;
