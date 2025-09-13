@@ -102,7 +102,7 @@ namespace starter_project_template.StartupExtensions
             services.AddSingleton<IConnectionMultiplexer>(sp =>
             {
                 var configuration = ConfigurationOptions.Parse("localhost:6379");
-                configuration.AbortOnConnectFail = false;
+                configuration.AbortOnConnectFail = true;
                 return ConnectionMultiplexer.Connect(configuration);
             });
             #endregion

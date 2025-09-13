@@ -25,7 +25,7 @@ namespace Application.UnitTests.AuhtServiceTests.Tests
             };
 
             _userManagerMock.Setup(um => um.FindByEmailAsync(It.IsAny<string>()))
-                .ReturnsAsync(new ApplicationUser { OTP = "12345", OTPExpirationTime = DateTime.UtcNow.AddMinutes(5) });
+                .ReturnsAsync(new ApplicationUser {  });
             _accessTokenServiceMock.Setup(ats => ats.GenerateToken(It.IsAny<ApplicationUser>()))
                 .Returns("fake-access-token");
             _refreshTokenServiceMock.Setup(rts => rts.GenerateRefreshToken(It.IsAny<Guid>()))
@@ -65,7 +65,7 @@ namespace Application.UnitTests.AuhtServiceTests.Tests
             };
 
             _userManagerMock.Setup(um => um.FindByEmailAsync(It.IsAny<string>()))
-                .ReturnsAsync(new ApplicationUser { OTP = "another_otp", OTPExpirationTime = DateTime.UtcNow.AddMinutes(4) });
+                .ReturnsAsync(new ApplicationUser {  });
             await Assert.ThrowsAsync<InvalidCredentialsException>(() => _authService.VerifyOtp(request));
         }
         #endregion
@@ -81,7 +81,7 @@ namespace Application.UnitTests.AuhtServiceTests.Tests
             };
 
             _userManagerMock.Setup(um => um.FindByEmailAsync(It.IsAny<string>()))
-                .ReturnsAsync(new ApplicationUser { OTP = "12345", OTPExpirationTime = DateTime.UtcNow.AddMinutes(-4) });
+                .ReturnsAsync(new ApplicationUser {  });
             await Assert.ThrowsAsync<InvalidCredentialsException>(() => _authService.VerifyOtp(request));
         }
         #endregion

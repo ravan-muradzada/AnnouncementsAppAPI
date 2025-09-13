@@ -2,6 +2,7 @@
 using Application.InternalServiceInterfaces;
 using Application.InternalServices;
 using Domain.Entities;
+using Domain.RepositoryInterfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Moq;
@@ -16,6 +17,7 @@ namespace Application.UnitTests.AuhtServiceTests
         private protected readonly Mock<IRefreshTokenService> _refreshTokenServiceMock;
         private protected readonly Mock<ITwoFactorService> _twoFactorServiceMock;
         private protected readonly Mock<IHttpContextAccessor> _httpContextAccessorMock;
+        private protected readonly Mock<IRedisRepository> _redisRepositoryMock;
 
         private protected readonly IAuthService _authService;
         private protected AuthServiceTestBase()
@@ -25,6 +27,7 @@ namespace Application.UnitTests.AuhtServiceTests
             _accessTokenServiceMock = new Mock<IAccessTokenService>();
             _refreshTokenServiceMock = new Mock<IRefreshTokenService>();
             _twoFactorServiceMock = new Mock<ITwoFactorService>();
+            _redisRepositoryMock = new Mock<IRedisRepository>();
 
             var httpContext = new DefaultHttpContext();
             httpContext.Request.Scheme = "https";
@@ -39,7 +42,8 @@ namespace Application.UnitTests.AuhtServiceTests
                 _accessTokenServiceMock.Object,
                 _refreshTokenServiceMock.Object,
                 _twoFactorServiceMock.Object,
-                _httpContextAccessorMock.Object
+                _httpContextAccessorMock.Object,
+                _redisRepositoryMock.Object
             );
         }
         private static Mock<UserManager<ApplicationUser>> MockUserManager()

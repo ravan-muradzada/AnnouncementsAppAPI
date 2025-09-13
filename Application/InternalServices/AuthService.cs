@@ -4,6 +4,7 @@ using Application.ExternalServiceInterfaces;
 using Application.InternalServiceInterfaces;
 using Domain.CustomExceptions;
 using Domain.Entities;
+using Domain.RepositoryInterfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
@@ -19,10 +20,11 @@ namespace Application.InternalServices
         private readonly IRefreshTokenService _refreshTokenService;
         private readonly ITwoFactorService _twoFactorService;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IRedisRepository _redisRepository;
         #endregion
 
         #region Constructor
-        public AuthService(UserManager<ApplicationUser> userManager, IEmailService emailService, IAccessTokenService accessTokenService, IRefreshTokenService refreshTokenService, ITwoFactorService twoFactorService, IHttpContextAccessor httpContextAccessor)
+        public AuthService(UserManager<ApplicationUser> userManager, IEmailService emailService, IAccessTokenService accessTokenService, IRefreshTokenService refreshTokenService, ITwoFactorService twoFactorService, IHttpContextAccessor httpContextAccessor, IRedisRepository redisRepository)
         {
             _userManager = userManager;
             _emailService = emailService;
@@ -30,6 +32,7 @@ namespace Application.InternalServices
             _refreshTokenService = refreshTokenService;
             _twoFactorService = twoFactorService;
             _httpContextAccessor = httpContextAccessor;
+            _redisRepository = redisRepository;
         }
         #endregion
 
@@ -96,9 +99,8 @@ namespace Application.InternalServices
 
             string body = $"<div style=\"font-family:sans-serif;text-align:center;padding:20px;background:#f4f4f4;border-radius:10px;max-width:400px;margin:20px auto;\">\r\n  <h2 style=\"color:#333;margin-bottom:15px;\">Your One-Time Password:</h2>\r\n  <div style=\"font-size:28px;color:#1a73e8;font-weight:bold;background:#e8f0fe;padding:10px 20px;border-radius:8px;display:inline-block;\">\r\n    {otp}\r\n  </div>\r\n</div>\r\n";
 
-            user.OTP = otp;
-            user.OTPExpirationTime = DateTime.UtcNow.AddMinutes(5);
-            await _userManager.UpdateAsync(user);
+            Guid userId = user.Id;
+            await _redisRepository.SetStringAsync($"otp:{userId}", otp, TimeSpan.FromMinutes(5));
 
             await _emailService.SendEmail(to, "OTP Sent!", body);
         }
@@ -114,7 +116,9 @@ namespace Application.InternalServices
                 throw new ObjectNotFoundException("User not found!");
             }
 
-            if (!string.Equals(user.OTP, request.Otp) || user.OTPExpirationTime < DateTime.UtcNow)
+            string? otpInRedis = await _redisRepository.GetStringAsync($"otp:{user.Id}");
+
+            if (otpInRedis is null || !string.Equals(request.Otp, otpInRedis))
             {
                 throw new InvalidCredentialsException("Invalid or expired OTP!");
             }
@@ -122,8 +126,7 @@ namespace Application.InternalServices
             string accessToken = _accessTokenService.GenerateToken(user);
             RefreshToken refreshTokenObject = await _refreshTokenService.GenerateRefreshToken(user.Id);
 
-            user.OTP = null;
-            user.OTPExpirationTime = null;
+            await _redisRepository.DeleteAsync($"otp:{user.Id}");
             user.EmailConfirmed = true;
             user.RefreshTokens.Add(refreshTokenObject);
             await _userManager.UpdateAsync(user);

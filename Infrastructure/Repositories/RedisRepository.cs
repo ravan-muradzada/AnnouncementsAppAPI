@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories
 {
-    public class RedisRepository : IRedisRepository, IAsyncDisposable
+    public class RedisRepository : IRedisRepository
     {
         private readonly IConnectionMultiplexer _redis;
         private readonly IDatabase _database;
@@ -55,13 +55,5 @@ namespace Infrastructure.Repositories
 
         public async Task<string?> HashGetAsync(string key, string field)
             => await _database.HashGetAsync(key, field);
-
-        public async ValueTask DisposeAsync()
-        {
-            if (_redis != null && _redis.IsConnected)
-            {
-                await _redis.CloseAsync();
-            }
-        }
     }
 }
