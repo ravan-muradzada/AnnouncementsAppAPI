@@ -124,14 +124,13 @@ namespace Application.InternalServices
             }
 
             string accessToken = _accessTokenService.GenerateToken(user);
-            RefreshToken refreshTokenObject = await _refreshTokenService.GenerateRefreshToken(user.Id);
+            string refreshToken = await _refreshTokenService.GenerateRefreshToken(user.Id);
 
             await _redisRepository.DeleteAsync($"otp:{user.Id}");
             user.EmailConfirmed = true;
-            user.RefreshTokens.Add(refreshTokenObject);
             await _userManager.UpdateAsync(user);
 
-            return new AuthenticatedResponse { AccessToken = accessToken, RefreshToken = refreshTokenObject.Token };
+            return new AuthenticatedResponse { AccessToken = accessToken, RefreshToken = refreshToken };
         }
         #endregion
 
@@ -163,12 +162,11 @@ namespace Application.InternalServices
             }
 
             string accessToken = _accessTokenService.GenerateToken(user);
-            RefreshToken refreshTokenObject = await _refreshTokenService.GenerateRefreshToken(user.Id);
+            string refreshToken = await _refreshTokenService.GenerateRefreshToken(user.Id);
 
-            user.RefreshTokens.Add(refreshTokenObject);
             await _userManager.UpdateAsync(user);
 
-            return new AuthenticatedResponse { AccessToken = accessToken, RefreshToken = refreshTokenObject.Token };
+            return new AuthenticatedResponse { AccessToken = accessToken, RefreshToken = refreshToken };
         }
         #endregion
 
@@ -184,12 +182,11 @@ namespace Application.InternalServices
             }
 
             string accessToken = _accessTokenService.GenerateToken(user);
-            RefreshToken refreshTokenObject = await _refreshTokenService.GenerateRefreshToken(user.Id);
+            string refreshToken = await _refreshTokenService.GenerateRefreshToken(user.Id);
 
-            user.RefreshTokens.Add(refreshTokenObject);
             await _userManager.UpdateAsync(user);
 
-            return new AuthenticatedResponse { AccessToken = accessToken, RefreshToken = refreshTokenObject.Token };
+            return new AuthenticatedResponse { AccessToken = accessToken, RefreshToken = refreshToken };
         }
         #endregion
 
@@ -206,11 +203,10 @@ namespace Application.InternalServices
             }
 
             string newAccessToken = _accessTokenService.GenerateToken(user);
-            RefreshToken refreshTokenObject = await _refreshTokenService.GenerateRefreshToken(user.Id);
-            user.RefreshTokens.Add(refreshTokenObject);
+            string newRefreshToken = await _refreshTokenService.GenerateRefreshToken(user.Id);
             await _userManager.UpdateAsync(user);
 
-            return new AuthenticatedResponse { AccessToken = newAccessToken, RefreshToken = refreshTokenObject.Token };
+            return new AuthenticatedResponse { AccessToken = newAccessToken, RefreshToken = newRefreshToken };
         }
         #endregion
 

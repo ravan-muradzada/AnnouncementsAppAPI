@@ -27,7 +27,7 @@ namespace Application.InternalServices
         #endregion
 
         #region GenerateRefreshToken
-        public async Task<RefreshToken> GenerateRefreshToken(Guid userId)
+        public async Task<string> GenerateRefreshToken(Guid userId)
         {
             byte[] bytes = new byte[64];
             var randomNumberGenerator = RandomNumberGenerator.Create();
@@ -38,7 +38,7 @@ namespace Application.InternalServices
 
             await _refreshTokenRepository.AddAsync(refreshTokenObject);
 
-            return refreshTokenObject;
+            return refreshToken;
         }
         #endregion
 

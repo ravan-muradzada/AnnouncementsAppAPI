@@ -26,16 +26,18 @@ namespace Application.UnitTests.AuhtServiceTests.Tests
 
             _userManagerMock.Setup(um => um.FindByEmailAsync(It.IsAny<string>()))
                 .ReturnsAsync(new ApplicationUser {  });
+            _redisRepositoryMock.Setup(rr => rr.GetStringAsync(It.IsAny<string>()))
+                .ReturnsAsync("12345");
             _accessTokenServiceMock.Setup(ats => ats.GenerateToken(It.IsAny<ApplicationUser>()))
                 .Returns("fake-access-token");
             _refreshTokenServiceMock.Setup(rts => rts.GenerateRefreshToken(It.IsAny<Guid>()))
-                .ReturnsAsync(new RefreshToken { Token = "our_refresh_token", ExpirationTime = DateTime.UtcNow.AddMinutes(5) });
+                .ReturnsAsync("sample-refresh-token");
             _userManagerMock.Setup(um => um.UpdateAsync(It.IsAny<ApplicationUser>()));
 
             AuthenticatedResponse response = await _authService.VerifyOtp(request);
 
             Assert.Equal("fake-access-token", response.AccessToken);
-            Assert.Equal("our_refresh_token", response.RefreshToken);
+            Assert.Equal("sample-refresh-token", response.RefreshToken);
         }
         #endregion
 

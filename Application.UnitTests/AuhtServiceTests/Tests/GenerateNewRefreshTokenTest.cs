@@ -28,7 +28,7 @@ namespace Application.UnitTests.AuhtServiceTests.Tests
             _accessTokenServiceMock.Setup(ats => ats.GenerateToken(It.IsAny<ApplicationUser>()))
                 .Returns("sample-access-token");
             _refreshTokenServiceMock.Setup(rts => rts.GenerateRefreshToken(It.IsAny<Guid>()))
-                .ReturnsAsync(new RefreshToken { Token = "sample-refresh-token", ExpirationTime = DateTime.UtcNow.AddMinutes(4) });
+                .ReturnsAsync("sample-refresh-token");
             _userManagerMock.Setup(um => um.UpdateAsync(It.IsAny<ApplicationUser>()));
 
             AuthenticatedResponse response = await _authService.GenerateNewRefreshToken(request);

@@ -9,7 +9,7 @@ namespace Application.InternalServiceInterfaces
 {
     public interface IRefreshTokenService
     {
-        Task<RefreshToken> GenerateRefreshToken(Guid userId);
+        Task<string> GenerateRefreshToken(Guid userId);
         Task<ApplicationUser?> FindUserOfRefreshTokenAndDeleteToken(string refreshToken);
         Task InvalidateUserTokensAsync(Guid userId);
     }

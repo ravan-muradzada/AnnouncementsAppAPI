@@ -55,5 +55,22 @@ namespace Infrastructure.Repositories
 
         public async Task<string?> HashGetAsync(string key, string field)
             => await _database.HashGetAsync(key, field);
+
+        public async Task DeleteByPattern(string pattern)
+        {
+            var server = GetServer(); 
+            var keys = server.Keys(pattern: pattern);
+
+            foreach (var key in keys)
+            {
+                await _database.KeyDeleteAsync(key);
+            }
+        }
+
+        private IServer GetServer()
+        {
+            var endpoint = _redis.GetEndPoints().First();
+            return _redis.GetServer(endpoint);
+        }
     }
 }

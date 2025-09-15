@@ -18,5 +18,6 @@ namespace Domain.RepositoryInterfaces
         Task<string?> ListPopAsync(string key);
         Task<bool> HashSetAsync(string key, string field, string value);
         Task<string?> HashGetAsync(string key, string field);
+        Task DeleteByPattern(string pattern);
     }
 }
