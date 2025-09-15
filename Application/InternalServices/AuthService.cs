@@ -210,24 +210,6 @@ namespace Application.InternalServices
         }
         #endregion
 
-        #region EnableTwoFactorAuth
-        public async Task EnableTwoFactorAuth(Guid userId)
-        {
-            ApplicationUser? user = await _userManager.FindByIdAsync(userId.ToString());
-            if (user is null) throw new ObjectNotFoundException("User not found!");
-            await _userManager.SetTwoFactorEnabledAsync(user, true);
-        }
-        #endregion
-
-        #region DisableTwoFactorAuth
-        public async Task DisableTwoFactorAuth(Guid userId)
-        {
-            ApplicationUser? user = await _userManager.FindByIdAsync(userId.ToString());
-            if (user is null) throw new ObjectNotFoundException("User not found!");
-            await _userManager.SetTwoFactorEnabledAsync(user, false);
-        }
-        #endregion
-
         #region ForgotPassword
         public async Task ForgotPassword(ForgotPasswordRequest request)
         {
@@ -256,6 +238,8 @@ namespace Application.InternalServices
             {
                 throw new ValidationException(string.Join(", ", result.Errors.Select(e => e.Description)));
             }
+            await _refreshTokenService.InvalidateUserTokensAsync(user.Id);
+            await _userManager.UpdateSecurityStampAsync(user);
         }
         #endregion
     }

@@ -35,7 +35,7 @@ namespace starter_project_template.Middlewares
                     if (user != null && user.SecurityStamp != tokenStamp)
                     {
                         context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                        await context.Response.WriteAsync("Token expired due to password reset or security change.");
+                        // Token expired due to password reset or security change.
                         return;
                     }
                 }

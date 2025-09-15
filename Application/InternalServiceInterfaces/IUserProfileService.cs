@@ -15,5 +15,7 @@ namespace Application.InternalServiceInterfaces
         Task ChangeEmail(Guid userId, ChangeEmailRequest request);
         Task<UserProfileResponse> VerifyEmailChange(Guid userId, VerifyEmailChangeRequest request);
         Task ChangePassword(Guid userId, ChangePasswordRequest request);
+        Task EnableTwoFactorAuth(Guid userId);
+        Task DisableTwoFactorAuth(Guid userId);
     }
 }

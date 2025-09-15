@@ -16,8 +16,6 @@ namespace Application.InternalServiceInterfaces
         Task<AuthenticatedResponse?> Login(LoginRequest request);
         Task<AuthenticatedResponse> VerifyTwoFactorAuth(VerifyTwoFactorAuthRequest request);
         Task<AuthenticatedResponse> GenerateNewRefreshToken(RefreshTokenRequest request);
-        Task EnableTwoFactorAuth(Guid userId);
-        Task DisableTwoFactorAuth(Guid userId);
         Task ForgotPassword(ForgotPasswordRequest request);
         Task ResetPassword(string token, ResetPasswordRequest request);
     }

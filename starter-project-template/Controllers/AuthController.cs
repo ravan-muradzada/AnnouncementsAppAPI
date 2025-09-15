@@ -102,35 +102,5 @@ namespace starter_project_template.Controllers
             });
         }
         #endregion
-
-        #region EnableTwoFactorAuth
-        [HttpPost]
-        [Authorize]
-        public async Task<IActionResult> EnableTwoFactorAuth()
-        {
-            Guid userId = User.GetUserId();
-            await _authService.EnableTwoFactorAuth(userId);
-
-            return Ok(new
-            {
-                Message = "Two factor auth has been enabled!"
-            });
-        }
-        #endregion
-
-        #region DisableTwoFactorAuth
-        [HttpPost]
-        [Authorize]
-        public async Task<IActionResult> DisableTwoFactorAuth()
-        {
-            Guid userId = User.GetUserId();
-            await _authService.DisableTwoFactorAuth(userId);
-
-            return Ok(new
-            {
-                Message = "Two factor auth has been disabled!"
-            });
-        }
-        #endregion
     }
 }

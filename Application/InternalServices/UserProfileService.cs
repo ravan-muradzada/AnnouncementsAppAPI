@@ -23,15 +23,17 @@ namespace Application.InternalServices
         private readonly IMapper _mapper;
         private readonly IEmailService _emailService;
         private readonly IRedisRepository _redisRepository;
+        private readonly IRefreshTokenService _refreshTokenService;
         #endregion
 
         #region Constructor
-        public UserProfileService(UserManager<ApplicationUser> userManager, IMapper mapper, IEmailService emailService, IRedisRepository redisRepository)
+        public UserProfileService(UserManager<ApplicationUser> userManager, IMapper mapper, IEmailService emailService, IRedisRepository redisRepository, IRefreshTokenService refreshTokenService)
         {
             _userManager = userManager;
             _mapper = mapper;
             _emailService = emailService;
             _redisRepository = redisRepository;
+            _refreshTokenService = refreshTokenService;
         }
         #endregion
 
@@ -101,14 +103,18 @@ namespace Application.InternalServices
             string currentPassword = request.CurrentPassword;
             ApplicationUser? user = await _userManager.FindByIdAsync(userId.ToString());
             if (user is null) throw new ObjectNotFoundException("User Not Found!");
+
             var isCurrentPasswordValid = await _userManager.CheckPasswordAsync(user, currentPassword);
             if (!isCurrentPasswordValid) throw new InvalidCredentialsException("Current password is incorrect!");
+
             var result = await _userManager.ChangePasswordAsync(user, currentPassword, request.NewPassword);
             if (!result.Succeeded)
             {
                 var errors = string.Join(", ", result.Errors.Select(e => e.Description));
                 throw new IdentityException($"Password change failed: {errors}");
             }
+            await _refreshTokenService.InvalidateUserTokensAsync(userId);
+            await _userManager.UpdateSecurityStampAsync(user);
         }
         #endregion
 
@@ -142,6 +148,24 @@ namespace Application.InternalServices
             await _userManager.UpdateAsync(user);
 
             return _mapper.Map<UserProfileResponse>(user);
+        }
+        #endregion
+
+        #region EnableTwoFactorAuth 
+        public async Task EnableTwoFactorAuth(Guid userId)
+        {
+            ApplicationUser? user = await _userManager.FindByIdAsync(userId.ToString());
+            if (user is null) throw new ObjectNotFoundException("User not found!");
+            await _userManager.SetTwoFactorEnabledAsync(user, true);
+        }
+        #endregion
+
+        #region DisableTwoFactorAuth
+        public async Task DisableTwoFactorAuth(Guid userId)
+        {
+            ApplicationUser? user = await _userManager.FindByIdAsync(userId.ToString());
+            if (user is null) throw new ObjectNotFoundException("User not found!");
+            await _userManager.SetTwoFactorEnabledAsync(user, false);
         }
         #endregion
     }
