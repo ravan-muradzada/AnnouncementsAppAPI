@@ -8,7 +8,7 @@ namespace Domain.CustomExceptions
 {
     public class InvalidCredentialsException : Exception
     {
-        public InvalidCredentialsException() { }
+        public InvalidCredentialsException(): base("Credentials are invalid") { }
         public InvalidCredentialsException(string message) : base(message) { }
         public InvalidCredentialsException(string message, Exception innerException) : base(message, innerException) { }
     }

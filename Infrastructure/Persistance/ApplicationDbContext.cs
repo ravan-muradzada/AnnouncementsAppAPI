@@ -14,17 +14,10 @@ namespace Infrastructure.Persistance
         {
             
         }
-        public DbSet<RefreshToken> RefreshTokens { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-
-            builder.Entity<ApplicationUser>()
-                .HasMany(u => u.RefreshTokens)
-                .WithOne(rf => rf.ApplicationUser)
-                .HasForeignKey(rf => rf.ApplicationUserId)
-                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

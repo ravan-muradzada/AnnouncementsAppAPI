@@ -108,7 +108,6 @@ namespace starter_project_template.StartupExtensions
             #endregion
 
             #region Repositories
-            services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
             services.AddScoped<IRedisRepository, RedisRepository>();
             #endregion
 

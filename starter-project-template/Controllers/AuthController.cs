@@ -70,7 +70,10 @@ namespace starter_project_template.Controllers
         }
         #endregion
 
-        #region GenerateNewRefreshToken
+        #region GenerateNew
+
+
+
         [HttpPost]
         public async Task<IActionResult> GenerateNewRefreshToken(RefreshTokenRequest request)
         {

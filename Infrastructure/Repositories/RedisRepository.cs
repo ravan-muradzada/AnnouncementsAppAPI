@@ -72,5 +72,9 @@ namespace Infrastructure.Repositories
             var endpoint = _redis.GetEndPoints().First();
             return _redis.GetServer(endpoint);
         }
+        public IEnumerable<string> GetByPattern(string pattern)
+        {
+            return GetServer().Keys(pattern: pattern).Select(p => p.ToString());
+        }
     }
 }
