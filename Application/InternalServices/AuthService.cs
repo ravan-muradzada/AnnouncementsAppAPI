@@ -242,6 +242,15 @@ namespace Application.InternalServices
             await _userManager.UpdateSecurityStampAsync(user);
         }
         #endregion
+
+        #region Logout
+        public async Task Logout(Guid userId)
+        {
+            ApplicationUser? user = await _userManager.FindByIdAsync(userId.ToString()) ?? throw new ObjectNotFoundException("User Not Found");
+            await _refreshTokenService.InvalidateUserTokensAsync(user.Id);
+            await _userManager.UpdateSecurityStampAsync(user);
+        }
+        #endregion
     }
 }
 

@@ -18,5 +18,6 @@ namespace Application.InternalServiceInterfaces
         Task<AuthenticatedResponse> GenerateNewRefreshToken(RefreshTokenRequest request);
         Task ForgotPassword(ForgotPasswordRequest request);
         Task ResetPassword(string token, ResetPasswordRequest request);
+        Task Logout(Guid userId);
     }
 }

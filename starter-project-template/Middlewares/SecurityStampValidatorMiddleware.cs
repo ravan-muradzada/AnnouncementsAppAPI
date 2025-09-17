@@ -21,9 +21,16 @@ namespace starter_project_template.Middlewares
 
         public async Task InvokeAsync(HttpContext context)
         {
+            // Skip if endpoint does not have Authorize attribute
+            var endpoint = context.GetEndpoint();
+            if (endpoint == null || !endpoint.Metadata.Any(m => m is Microsoft.AspNetCore.Authorization.AuthorizeAttribute))
+            {
+                await _next(context);
+                return;
+            }
             if (context.User.Identity?.IsAuthenticated == true)
             {
-                var userId = context.User.FindFirstValue(JwtRegisteredClaimNames.Sub);
+                var userId = context.User.FindFirstValue(ClaimTypes.NameIdentifier);
                 var tokenStamp = context.User.FindFirstValue("security_stamp");
 
                 if (!string.IsNullOrEmpty(userId) && !string.IsNullOrEmpty(tokenStamp))

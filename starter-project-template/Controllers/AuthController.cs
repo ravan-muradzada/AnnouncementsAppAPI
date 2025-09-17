@@ -70,10 +70,7 @@ namespace starter_project_template.Controllers
         }
         #endregion
 
-        #region GenerateNew
-
-
-
+        #region GenerateNewRefreshToken
         [HttpPost]
         public async Task<IActionResult> GenerateNewRefreshToken(RefreshTokenRequest request)
         {
@@ -105,5 +102,29 @@ namespace starter_project_template.Controllers
             });
         }
         #endregion
+
+        #region Logout
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> Logout()
+        {
+            Guid userId = User.GetUserId();
+            await _authService.Logout(userId);
+            return Ok(new
+            {
+                Message = "You are successfully logged out!"
+            });
+        }
+        #endregion
+
+        [HttpGet]
+        [Authorize]
+        public IActionResult Protected()
+        {
+            return Ok(new
+            {
+                Message = "If you see this message, you are authenticated!"
+            });
+        }
     }
 }

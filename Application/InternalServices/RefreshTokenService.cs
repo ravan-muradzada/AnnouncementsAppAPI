@@ -48,7 +48,7 @@ namespace Application.InternalServices
         #region FindUserOfRefreshTokenAndDeleteToken
         public async Task<ApplicationUser?> FindUserOfRefreshTokenAndDeleteToken(string refreshToken)
         {
-            string pattern = $"RefreshToken:*:{refreshToken}";
+            string pattern = $"Refresh_Token:*:{refreshToken}";
             IEnumerable<string> result = _redisRepository.GetByPattern(pattern);
             
             if (result.Count() == 0)
