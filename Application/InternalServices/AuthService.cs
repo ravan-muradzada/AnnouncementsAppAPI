@@ -244,10 +244,10 @@ namespace Application.InternalServices
         #endregion
 
         #region Logout
-        public async Task Logout(Guid userId)
+        public async Task Logout(LogoutRequest request)
         {
-            ApplicationUser? user = await _userManager.FindByIdAsync(userId.ToString()) ?? throw new ObjectNotFoundException("User Not Found");
-            await _refreshTokenService.InvalidateUserTokensAsync(user.Id);
+            ApplicationUser? user = await _refreshTokenService.FindUserOfRefreshTokenAndDeleteToken(request.RefreshToken) ?? throw new ObjectNotFoundException("User Not Found!");
+
             await _userManager.UpdateSecurityStampAsync(user);
         }
         #endregion

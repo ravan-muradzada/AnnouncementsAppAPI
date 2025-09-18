@@ -70,6 +70,15 @@ namespace starter_project_template.Controllers
         }
         #endregion
 
+        #region VerifyTwoFactorAuth
+        [HttpPost]
+        public async Task<IActionResult> VerifyTwoFactorAuth(VerifyTwoFactorAuthRequest request)
+        {
+            AuthenticatedResponse response = await _authService.VerifyTwoFactorAuth(request);
+            return Ok(response);
+        }
+        #endregion
+
         #region GenerateNewRefreshToken
         [HttpPost]
         public async Task<IActionResult> GenerateNewRefreshToken(RefreshTokenRequest request)
@@ -106,25 +115,15 @@ namespace starter_project_template.Controllers
         #region Logout
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> Logout()
+        public async Task<IActionResult> Logout(LogoutRequest request)
         {
             Guid userId = User.GetUserId();
-            await _authService.Logout(userId);
+            await _authService.Logout(request);
             return Ok(new
             {
                 Message = "You are successfully logged out!"
             });
         }
         #endregion
-
-        [HttpGet]
-        [Authorize]
-        public IActionResult Protected()
-        {
-            return Ok(new
-            {
-                Message = "If you see this message, you are authenticated!"
-            });
-        }
     }
 }

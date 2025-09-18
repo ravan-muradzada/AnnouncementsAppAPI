@@ -8,7 +8,7 @@ namespace Application.DTOs.UserProfile.Response
 {
     public class UserProfileResponse
     {
-        public Guid UserId { get; set; }
+        public Guid Id { get; set; }
         public string UserName { get; set; } = default!;
         public string Email { get; set; } = default!;
     }
