@@ -12,5 +12,6 @@ namespace Domain.Entities
         public readonly int countOfAllowedChangeUsername = 3;
         public int currentCountOfChange { get; set; } = 0;
         public DateTime? LimitDate { get; set; }
+        public List<Announcement> Announcements { get; set; } = new List<Announcement>();
     }
 }

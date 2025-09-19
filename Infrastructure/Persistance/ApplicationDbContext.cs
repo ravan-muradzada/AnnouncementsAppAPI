@@ -11,9 +11,8 @@ namespace Infrastructure.Persistance
 {
     public class ApplicationDbContext: IdentityDbContext<ApplicationUser, ApplicationRole, Guid>
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
-        {
-            
-        }
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
+
+        public DbSet<Announcement> Announcements { get; set; }
     }
 }
