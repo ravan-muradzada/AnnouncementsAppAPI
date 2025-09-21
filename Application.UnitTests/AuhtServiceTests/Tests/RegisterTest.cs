@@ -24,12 +24,7 @@ namespace Application.UnitTests.AuhtServiceTests.Tests
         [Fact]
         public async Task RegisterAsync_Success_ReturnsResponse()
         {
-            RegisterRequest request = new RegisterRequest
-            {
-                UserName = "MrRavan",
-                Email = "ravan@gmail.com",
-                Password = "Ravans_password123!"
-            };
+            RegisterRequest request = new RegisterRequest("MrRavan", "ravan@gmail.com", "Ravans_password123!");
 
             _userManagerMock.Setup(um => um.CreateAsync(It.IsAny<ApplicationUser>(), request.Password))
                 .ReturnsAsync(IdentityResult.Success);
@@ -48,12 +43,7 @@ namespace Application.UnitTests.AuhtServiceTests.Tests
         [Fact]
         public async Task RegisterAsync_DuplicateEmail_ThrowsConflictException()
         {
-            RegisterRequest request = new RegisterRequest
-            {
-                UserName = "_",
-                Email = "duplicate@gmail.com",
-                Password = "Ravans_password123!"
-            };
+            RegisterRequest request = new RegisterRequest("_", "duplicate@gmail.com", "Ravans_password123!");
 
             var identityResult = IdentityResult.Failed(new IdentityError
             {
@@ -76,12 +66,7 @@ namespace Application.UnitTests.AuhtServiceTests.Tests
         [Fact]
         public async Task RegisterAsync_PasswordTooShort_ThrowsValidationException()
         {
-            RegisterRequest request = new RegisterRequest
-            {
-                UserName = "_",
-                Email = "ravan@gmail.com",
-                Password = "_"
-            };
+            RegisterRequest request = new RegisterRequest("_", "ravan@gmail.com", "_");
 
             var identityResult = IdentityResult.Failed(new IdentityError
             {
@@ -104,12 +89,7 @@ namespace Application.UnitTests.AuhtServiceTests.Tests
         [Fact]
         public async Task RegisterAsync_OtherErrors_InternalServerException()
         {
-            RegisterRequest request = new RegisterRequest
-            {
-                UserName = "_",
-                Email = "ravan@gmail.com",
-                Password = "ravan12345_R"
-            };
+            RegisterRequest request = new RegisterRequest("_", "ravan@gmail.com", "ravan12345_R");
 
             var identityResult = IdentityResult.Failed(new IdentityError
             {

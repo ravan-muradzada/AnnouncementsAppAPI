@@ -17,7 +17,7 @@ namespace Application.UnitTests.AuhtServiceTests.Tests
         [Fact]
         public async Task ForgotPassword_Success_SendMail()
         {
-            var request = new ForgotPasswordRequest { Email = "user@test.com" };
+            var request = new ForgotPasswordRequest("user@test.com");
             var user = new ApplicationUser { Email = request.Email };
 
             _userManagerMock.Setup(x => x.FindByEmailAsync(request.Email))
@@ -46,7 +46,7 @@ namespace Application.UnitTests.AuhtServiceTests.Tests
         public async Task ForgotPassword_UserNotFound_ThrowsException()
         {
             // Arrange
-            var request = new ForgotPasswordRequest { Email = "notfound@test.com" };
+            var request = new ForgotPasswordRequest("notfound@test.com");
             _userManagerMock.Setup(x => x.FindByEmailAsync(request.Email))
                 .ReturnsAsync((ApplicationUser?)null);
 

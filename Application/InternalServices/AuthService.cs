@@ -78,7 +78,7 @@ namespace Application.InternalServices
                 }
             }
 
-            RegisterResponse response = new RegisterResponse { Email = request.Email };
+            RegisterResponse response = new RegisterResponse(request.Email);
 
             return response;
         }
@@ -130,7 +130,7 @@ namespace Application.InternalServices
             user.EmailConfirmed = true;
             await _userManager.UpdateAsync(user);
 
-            return new AuthenticatedResponse { AccessToken = accessToken, RefreshToken = refreshToken };
+            return new AuthenticatedResponse(accessToken, refreshToken);
         }
         #endregion
 
@@ -166,7 +166,7 @@ namespace Application.InternalServices
 
             await _userManager.UpdateAsync(user);
 
-            return new AuthenticatedResponse { AccessToken = accessToken, RefreshToken = refreshToken };
+            return new AuthenticatedResponse(accessToken, refreshToken);
         }
         #endregion
 
@@ -186,7 +186,7 @@ namespace Application.InternalServices
 
             await _userManager.UpdateAsync(user);
 
-            return new AuthenticatedResponse { AccessToken = accessToken, RefreshToken = refreshToken };
+            return new AuthenticatedResponse(accessToken, refreshToken);
         }
         #endregion
 
@@ -206,7 +206,7 @@ namespace Application.InternalServices
             string newRefreshToken = await _refreshTokenService.GenerateRefreshToken(user.Id);
             await _userManager.UpdateAsync(user);
 
-            return new AuthenticatedResponse { AccessToken = newAccessToken, RefreshToken = newRefreshToken };
+            return new AuthenticatedResponse(newAccessToken, newRefreshToken);
         }
         #endregion
 

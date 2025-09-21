@@ -6,10 +6,5 @@ using System.Threading.Tasks;
 
 namespace Application.DTOs.UserProfile.Response
 {
-    public class UserProfileResponse
-    {
-        public Guid Id { get; set; }
-        public string UserName { get; set; } = default!;
-        public string Email { get; set; } = default!;
-    }
+    public sealed record UserProfileResponse(Guid Id, string UserName, string Email);
 }

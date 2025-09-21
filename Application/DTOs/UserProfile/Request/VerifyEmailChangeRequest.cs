@@ -7,9 +7,5 @@ using System.Threading.Tasks;
 
 namespace Application.DTOs.UserProfile.Request
 {
-    public class VerifyEmailChangeRequest
-    {
-        [Required(ErrorMessage = "OTP is required")]
-        public string OTP { get; set; } = default!;
-    }
+    public sealed record VerifyEmailChangeRequest(string OTP);
 }

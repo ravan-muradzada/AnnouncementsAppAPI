@@ -7,9 +7,5 @@ using System.Threading.Tasks;
 
 namespace Application.DTOs.Auth.Request
 {
-    public class RefreshTokenRequest
-    {
-        [Required(ErrorMessage = "You need to attach the previous refresh token to generate new one!")]
-        public string RefreshToken { get; set; } = default!;
-    }
+    public sealed record RefreshTokenRequest(string RefreshToken);
 }

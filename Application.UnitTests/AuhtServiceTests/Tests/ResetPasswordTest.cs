@@ -19,11 +19,8 @@ namespace Application.UnitTests.AuhtServiceTests.Tests
         [Fact]
         public async Task ResetPassword_Success_RevokesRefreshTokens()
         {
-            var request = new ResetPasswordRequest
-            {
-                Email = "user@test.com",
-                NewPassword = "NewPass123!"
-            };
+            var request = new ResetPasswordRequest("user@test.com", "NewPass123!");
+
             string token = "valid-token";
             var user = new ApplicationUser { Id = Guid.NewGuid(), Email = request.Email };
 
@@ -50,11 +47,7 @@ namespace Application.UnitTests.AuhtServiceTests.Tests
         [Fact]
         public async Task ResetPassword_UserNotFound_ThrowsException()
         {
-            var request = new ResetPasswordRequest
-            {
-                Email = "notfound@test.com",
-                NewPassword = "NewPass123!"
-            };
+            var request = new ResetPasswordRequest("notfound@test.com", "NewPass123!");
             string token = "valid-token";
             _userManagerMock.Setup(x => x.FindByEmailAsync(request.Email))
                 .ReturnsAsync((ApplicationUser?)null);
@@ -68,11 +61,8 @@ namespace Application.UnitTests.AuhtServiceTests.Tests
         [Fact]
         public async Task ResetPassword_ResetFails_ThrowsValidationException()
         {
-            var request = new ResetPasswordRequest
-            {
-                Email = "user@test.com",
-                NewPassword = "NewPass123!"
-            };
+            var request = new ResetPasswordRequest("user@test.com", "NewPass123!");
+            
             string token = "bad-token";
             var user = new ApplicationUser { Email = request.Email };
 

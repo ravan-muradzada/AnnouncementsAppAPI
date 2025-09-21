@@ -19,9 +19,7 @@ namespace Application.UnitTests.AuhtServiceTests.Tests
         public async Task RefreshToken_Success_ReturnsResponse()
         {
             RefreshTokenRequest request = new RefreshTokenRequest
-            {
-                RefreshToken = "sample-refresh-token"
-            };
+            ("sample-refresh-token");
 
             _refreshTokenServiceMock.Setup(rsm => rsm.FindUserOfRefreshTokenAndDeleteToken(It.IsAny<string>()))
                 .ReturnsAsync(new ApplicationUser());
@@ -42,10 +40,8 @@ namespace Application.UnitTests.AuhtServiceTests.Tests
         [Fact]
         public async Task RefreshToken_InvalidOrExpiredToken_ThrowsInvalidCredentialsException()
         {
-            RefreshTokenRequest request = new RefreshTokenRequest
-            {
-                RefreshToken = "sample-refresh-token"
-            };
+            RefreshTokenRequest request = new RefreshTokenRequest("sample-refresh-token");
+
             _refreshTokenServiceMock.Setup(rsm => rsm.FindUserOfRefreshTokenAndDeleteToken(It.IsAny<string>()));
 
             await Assert.ThrowsAsync<InvalidCredentialsException>(() => _authService.GenerateNewRefreshToken(request));

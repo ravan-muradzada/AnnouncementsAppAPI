@@ -7,9 +7,5 @@ using System.Threading.Tasks;
 
 namespace Application.DTOs.Auth.Request
 {
-    public class VerifyAuthenticatorRequest
-    {
-        [Required(ErrorMessage = "You need to attach the code to authenticate!")]
-        public string Code { get; set; } = string.Empty;
-    }
+    public sealed record VerifyAuthenticatorRequest(string Code);
 }

@@ -6,8 +6,5 @@ using System.Threading.Tasks;
 
 namespace Application.DTOs.Auth.Response
 {
-    public class RegisterResponse
-    {
-        public string Email { get; set; } = default!;
-    }
+    public sealed record RegisterResponse(string Email);
 }

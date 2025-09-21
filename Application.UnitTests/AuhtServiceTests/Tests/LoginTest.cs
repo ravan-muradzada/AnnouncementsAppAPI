@@ -18,11 +18,7 @@ namespace Application.UnitTests.AuhtServiceTests.Tests
         [Fact]
         public async Task Login_Success_ReturnsResponse()
         {
-            LoginRequest request = new LoginRequest
-            {
-                Username = "ravan@gmail.com",
-                Password = "Ravan's_password1234"
-            };
+            LoginRequest request = new LoginRequest("ravan@gmail.com", "Ravan's_password1234");
 
             _userManagerMock.Setup(um => um.FindByNameAsync(It.IsAny<string>()))
                 .ReturnsAsync(new ApplicationUser { EmailConfirmed = true });
@@ -54,11 +50,7 @@ namespace Application.UnitTests.AuhtServiceTests.Tests
         [Fact]
         public async Task Login_WrongEmail_ThrowsInvalidCredentialsException()
         {
-            LoginRequest request = new LoginRequest
-            {
-                Username = "ravan@gmail.com",
-                Password = "123456"
-            };
+            LoginRequest request = new LoginRequest("ravan@gmail.com", "123456");
 
             _userManagerMock.Setup(um => um.FindByEmailAsync(It.IsAny<string>()));
             await Assert.ThrowsAsync<InvalidCredentialsException>(() => _authService.Login(request));
@@ -69,11 +61,7 @@ namespace Application.UnitTests.AuhtServiceTests.Tests
         [Fact]
         public async Task Login_WrongPassword_ThrowsInvalidCredentialsException()
         {
-            LoginRequest request = new LoginRequest
-            {
-                Username = "ravan@gmail.com",
-                Password = "Ravan_1234"
-            };
+            LoginRequest request = new LoginRequest("ravan@gmail.com", "Ravan_1234");           
 
             _userManagerMock.Setup(um => um.FindByNameAsync(It.IsAny<string>()))
                 .ReturnsAsync(new ApplicationUser { });
@@ -88,11 +76,7 @@ namespace Application.UnitTests.AuhtServiceTests.Tests
         [Fact]
         public async Task Login_EmailNotConfirmed_ThrowsNotConfirmedException()
         {
-            LoginRequest request = new LoginRequest
-            {
-                Username = "ravan@gmail.com",
-                Password = "Ravan's_password1234"
-            };
+            LoginRequest request = new LoginRequest("ravan@gmail.com", "Ravan's_password1234");
 
             _userManagerMock.Setup(um => um.FindByNameAsync(It.IsAny<string>()))
                 .ReturnsAsync(new ApplicationUser { EmailConfirmed = false });
@@ -107,11 +91,7 @@ namespace Application.UnitTests.AuhtServiceTests.Tests
         [Fact]
         public async Task Login_TwoFactorAuthEnabled_ReturnsNull()
         {
-            LoginRequest request = new LoginRequest
-            {
-                Username = "ravan@gmail.com",
-                Password = "Ravan's_password1234"
-            };
+            LoginRequest request = new LoginRequest("ravan@gmail.com", "Ravan's_password1234");
 
             _userManagerMock.Setup(um => um.FindByNameAsync(It.IsAny<string>()))
                 .ReturnsAsync(new ApplicationUser { EmailConfirmed = true });

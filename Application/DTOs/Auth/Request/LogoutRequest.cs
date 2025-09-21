@@ -7,9 +7,5 @@ using System.Threading.Tasks;
 
 namespace Application.DTOs.Auth.Request
 {
-    public class LogoutRequest
-    {
-        [Required(ErrorMessage = "Refresh token is required")]
-        public string RefreshToken { get; set; } = default!;
-    }
+    public sealed record LogoutRequest(string RefreshToken);
 }

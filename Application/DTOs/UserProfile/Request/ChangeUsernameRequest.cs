@@ -7,9 +7,5 @@ using System.Threading.Tasks;
 
 namespace Application.DTOs.UserProfile.Request
 {
-    public class ChangeUsernameRequest
-    {
-        [Required(ErrorMessage = "Username is required")]
-        public string NewUsername { get; set; } = default!;
-    }
+    public sealed record ChangeUsernameRequest(string NewUsername);
 }

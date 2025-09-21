@@ -7,11 +7,5 @@ using System.Threading.Tasks;
 
 namespace Application.DTOs.Auth.Request
 {
-    public class LoginRequest
-    {
-        [Required(ErrorMessage = "Username is required!")]
-        public string Username { get; set; } = default!;
-        [Required(ErrorMessage = "Password is required!")]
-        public string Password { get; set; } = default!;
-    }
+    public sealed record LoginRequest(string Username, string Password);
 }

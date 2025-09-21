@@ -7,10 +7,5 @@ using System.Threading.Tasks;
 
 namespace Application.DTOs.UserProfile.Request
 {
-    public class ChangeEmailRequest
-    {
-        [Required(ErrorMessage = "You need to provide a new email address.")]
-        [EmailAddress(ErrorMessage = "The email address provided is not valid.")]
-        public string NewEmail { get; set; } = default!;
-    }
+    public sealed record ChangeEmailRequest(string NewEmail);
 }

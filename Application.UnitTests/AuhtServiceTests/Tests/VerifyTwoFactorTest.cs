@@ -17,11 +17,8 @@ namespace Application.UnitTests.AuhtServiceTests.Tests
         [Fact]
         public async Task VerifyTwoFactor_Success_ReturnsResponse()
         {
-            VerifyTwoFactorAuthRequest request = new VerifyTwoFactorAuthRequest
-            {
-                Email = "example@gmail.com",
-                Code = "dfsdfsgjk1235445"
-            };
+            VerifyTwoFactorAuthRequest request = new VerifyTwoFactorAuthRequest("example@gmail.com",
+                "dfsdfsgjk1235445");
 
             _userManagerMock.Setup(um => um.FindByEmailAsync(It.IsAny<string>()))
                 .ReturnsAsync(new ApplicationUser { });
@@ -50,11 +47,8 @@ namespace Application.UnitTests.AuhtServiceTests.Tests
         [Fact]
         public async Task VerifyTwoFactor_UserNotFound_ThrowsObjectNotFoundException()
         {
-            VerifyTwoFactorAuthRequest request = new VerifyTwoFactorAuthRequest
-            {
-                Email = "example@gmail.com",
-                Code = "dfsdfsgjk1235445"
-            };
+            VerifyTwoFactorAuthRequest request = new VerifyTwoFactorAuthRequest("example@gmail.com",
+                "dfsdfsgjk1235445");
 
             _userManagerMock.Setup(um => um.FindByEmailAsync(It.IsAny<string>()));
 
@@ -72,11 +66,8 @@ namespace Application.UnitTests.AuhtServiceTests.Tests
         [Fact]
         public async Task VerifyTwoFactor_TwoFactorAuthFailed_ThrowsTwoFactorAuthFailedException()
         {
-            VerifyTwoFactorAuthRequest request = new VerifyTwoFactorAuthRequest
-            {
-                Email = "example@gmail.com",
-                Code = "dfsdfsgjk1235445"
-            };
+            VerifyTwoFactorAuthRequest request = new VerifyTwoFactorAuthRequest("example@gmail.com",
+                "dfsdfsgjk1235445");
 
             _userManagerMock.Setup(um => um.FindByEmailAsync(It.IsAny<string>()))
                 .ReturnsAsync(new ApplicationUser { });

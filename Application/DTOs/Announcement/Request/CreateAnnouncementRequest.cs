@@ -7,11 +7,6 @@ using System.Threading.Tasks;
 
 namespace Application.DTOs.Announcement.Request
 {
-    public class CreateAnnouncementRequest
-    {
-        public string Title { get; set; } = default!;
-        public string Content { get; set; } = default!;
-        public string Category { get; set; } = default!;
-        public DateTime? ExpiresAt { get; set; }
-    }
+    public sealed record CreateAnnouncementRequest
+        (string Title, string Content, string Category, DateTime? ExpiresAt);
 }

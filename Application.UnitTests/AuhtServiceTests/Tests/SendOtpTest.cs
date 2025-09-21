@@ -21,10 +21,7 @@ namespace Application.UnitTests.AuhtServiceTests.Tests
         [Fact]
         public async Task SendOtp_Success_ReturnsResponse()
         {
-            SendOtpRequest request = new SendOtpRequest
-            {
-                Email = "ravan@gmail.com"
-            };
+            SendOtpRequest request = new SendOtpRequest("ravan@gmail.com");
 
             _userManagerMock.Setup(um => um.FindByEmailAsync(request.Email))
                 .ReturnsAsync(new ApplicationUser { Email = request.Email });
@@ -44,10 +41,7 @@ namespace Application.UnitTests.AuhtServiceTests.Tests
         [Fact]
         public async Task SendOtp_NullUser_ObjectNotFoundException()
         {
-            SendOtpRequest request = new SendOtpRequest
-            {
-                Email = "ravan@gmail.com"
-            };
+            SendOtpRequest request = new SendOtpRequest("ravan@gmail.com");
 
             _userManagerMock.Setup(um => um.FindByEmailAsync(request.Email));
             await Assert.ThrowsAsync<ObjectNotFoundException>(() => _authService.SendOtp(request));

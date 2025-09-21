@@ -7,9 +7,5 @@ using System.Threading.Tasks;
 
 namespace Application.DTOs.Auth.Request
 {
-    public class ForgotPasswordRequest
-    {
-        [Required(ErrorMessage = "To reset password, you need to enter your email!")]
-        public string Email { get; set; } = default!;
-    }
+    public sealed record ForgotPasswordRequest(string Email);
 }

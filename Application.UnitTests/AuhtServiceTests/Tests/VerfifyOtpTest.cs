@@ -18,11 +18,7 @@ namespace Application.UnitTests.AuhtServiceTests.Tests
         [Fact]
         public async Task VerifyOtp_Success_ReturnsResponse()
         {
-            VerifyOtpRequest request = new VerifyOtpRequest
-            {
-                Email = "ravan@gmail.com",
-                Otp = "12345"
-            };
+            VerifyOtpRequest request = new VerifyOtpRequest("ravan@gmail.com", "12345");
 
             _userManagerMock.Setup(um => um.FindByEmailAsync(It.IsAny<string>()))
                 .ReturnsAsync(new ApplicationUser {  });
@@ -45,11 +41,7 @@ namespace Application.UnitTests.AuhtServiceTests.Tests
         [Fact]
         public async Task VerifyOtp_UserNotFound_ThrowsObjectNotFound()
         {
-            VerifyOtpRequest request = new VerifyOtpRequest
-            {
-                Email = "ravan@gmail.com",
-                Otp = "12345",
-            };
+            VerifyOtpRequest request = new VerifyOtpRequest("ravan@gmail.com", "12345");
 
             _userManagerMock.Setup(um => um.FindByEmailAsync(It.IsAny<string>()));
             await Assert.ThrowsAsync<ObjectNotFoundException>(() => _authService.VerifyOtp(request));
@@ -60,11 +52,7 @@ namespace Application.UnitTests.AuhtServiceTests.Tests
         [Fact]
         public async Task VerifyOtp_OtpMismatch_ThrowsInvalidCredentialsException()
         {
-            VerifyOtpRequest request = new VerifyOtpRequest
-            {
-                Email = "ravan@gmail.com",
-                Otp = "12345",
-            };
+            VerifyOtpRequest request = new VerifyOtpRequest("ravan@gmail.com", "12345");
 
             _userManagerMock.Setup(um => um.FindByEmailAsync(It.IsAny<string>()))
                 .ReturnsAsync(new ApplicationUser {  });
@@ -76,11 +64,7 @@ namespace Application.UnitTests.AuhtServiceTests.Tests
         [Fact]
         public async Task VerifyOtp_ExpiretOtp_ThrowsInvalidCredentials()
         {
-            VerifyOtpRequest request = new VerifyOtpRequest
-            {
-                Email = "ravan@gmail.com",
-                Otp = "12345",
-            };
+            VerifyOtpRequest request = new VerifyOtpRequest("ravan@gmail.com", "12345");
 
             _userManagerMock.Setup(um => um.FindByEmailAsync(It.IsAny<string>()))
                 .ReturnsAsync(new ApplicationUser {  });
