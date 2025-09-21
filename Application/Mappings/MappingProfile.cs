@@ -1,4 +1,6 @@
-﻿using Application.DTOs.UserProfile.Response;
+﻿using Application.DTOs.Announcement.Request;
+using Application.DTOs.Announcement.Response;
+using Application.DTOs.UserProfile.Response;
 using AutoMapper;
 using Domain.Entities;
 using System;
@@ -13,11 +15,19 @@ namespace Application.Mappings
     {
         public MappingProfile() { 
             ConfigureUserProfileMappings();
+            ConfigureAnnouncementMappings();
         }
 
         private void ConfigureUserProfileMappings()
         {
             CreateMap<ApplicationUser, UserProfileResponse>();
+        }
+
+        private void ConfigureAnnouncementMappings()
+        {
+            CreateMap<CreateAnnouncementRequest, Announcement>();
+            CreateMap<Announcement, AnnouncementResponse>();
+            CreateMap<UpdateAnnouncementRequest, Announcement>();
         }
     }
 }

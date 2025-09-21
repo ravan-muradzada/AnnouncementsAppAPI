@@ -1,7 +1,7 @@
 ﻿using Domain.CustomExceptions;
 using System.Security.Claims;
 
-namespace starter_project_template.Extensions
+namespace AnnouncemenetsAppAPI.Extensions
 {
     public static class ClaimsPrincipalExtensions
     {

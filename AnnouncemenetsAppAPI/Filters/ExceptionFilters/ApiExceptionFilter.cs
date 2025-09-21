@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System.ComponentModel.DataAnnotations;
 
-namespace starter_project_template.Filters.ExceptionFilters
+namespace AnnouncemenetsAppAPI.Filters.ExceptionFilters
 {
     public class ApiExceptionFilter : IExceptionFilter
     {

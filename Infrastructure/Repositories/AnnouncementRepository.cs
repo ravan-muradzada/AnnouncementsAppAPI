@@ -15,10 +15,11 @@ namespace Infrastructure.Repositories
             _dbContext = dbContext;
         }
 
-        public async Task AddAync(Announcement announcement, CancellationToken ct = default)
+        public async Task<Announcement> AddAync(Announcement announcement, CancellationToken ct = default)
         {
             await _dbContext.Announcements.AddAsync(announcement, ct);
             await _dbContext.SaveChangesAsync();
+            return announcement;
         }
 
         public async Task DeleteAsync(Announcement announcement, CancellationToken ct = default)
@@ -33,9 +34,9 @@ namespace Infrastructure.Repositories
             return announcement is not null;
         }
 
-        public async Task<IReadOnlyList<Announcement>> GetAllAsync(CancellationToken ct = default)
+        public async Task<List<Announcement>> GetAllAsync(CancellationToken ct = default)
         {
-            IReadOnlyList<Announcement> announcements = await _dbContext.Announcements.ToListAsync();
+            List<Announcement> announcements = await _dbContext.Announcements.ToListAsync();
             return announcements;
         }
 
@@ -79,10 +80,17 @@ namespace Infrastructure.Repositories
             return new PagedResult<Announcement>(items, totalCount, page, pageSize);
         }
 
-        public async Task UpdateAsync(Announcement announcement, CancellationToken ct = default)
+        public async Task SaveChangesAsync(Announcement announcement, CancellationToken ct = default)
+        {
+            _dbContext.Announcements.Update(announcement);
+            await _dbContext.SaveChangesAsync(ct);
+        }
+
+        public async Task<Announcement> UpdateAsync(Announcement announcement, CancellationToken ct = default)
         {
             _dbContext.Announcements.Update(announcement);
             await _dbContext.SaveChangesAsync();
+            return announcement;
         }
     }
 }

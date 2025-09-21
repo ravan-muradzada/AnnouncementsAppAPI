@@ -1,13 +1,13 @@
-﻿using Application.DTOs.UserProfile.Request;
+﻿using AnnouncemenetsAppAPI.Extensions;
+using Application.DTOs.UserProfile.Request;
 using Application.DTOs.UserProfile.Response;
 using Application.InternalServiceInterfaces;
 using Application.InternalServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using starter_project_template.Extensions;
 
-namespace starter_project_template.Controllers
+namespace AnnouncemenetsAppAPI.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]

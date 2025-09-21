@@ -1,9 +1,11 @@
-﻿using Application.ExternalServiceInterfaces;
+﻿using AnnouncemenetsAppAPI.Filters.ExceptionFilters;
+using Application.ExternalServiceInterfaces;
 using Application.InternalServiceInterfaces;
 using Application.InternalServices;
 using Application.Mappings;
 using Domain.Entities;
 using Domain.RepositoryInterfaces;
+using FluentValidation;
 using Infrastructure.ExternalServices;
 using Infrastructure.Persistance;
 using Infrastructure.Repositories;
@@ -11,14 +13,11 @@ using Infrastructure.Validators;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using StackExchange.Redis;
-using starter_project_template.Filters.ExceptionFilters;
-using System.Reflection.Metadata;
 using System.Text;
 
-namespace starter_project_template.StartupExtensions
+namespace AnnouncemenetsAppAPI.StartupExtensions
 {
     public static class ConfigureServicesExtensions
     {
@@ -29,6 +28,10 @@ namespace starter_project_template.StartupExtensions
             {
                 options.Filters.Add<ApiExceptionFilter>();
             });
+            #endregion
+
+            #region FluentValidation
+            services.AddValidatorsFromAssembly(typeof(Program).Assembly, includeInternalTypes: true);
             #endregion
 
             #region Swagger
@@ -91,6 +94,7 @@ namespace starter_project_template.StartupExtensions
             services.AddScoped<IRefreshTokenService, RefreshTokenService>();
             services.AddScoped<ITwoFactorService, TwoFactorService>();
             services.AddScoped<IUserProfileService, UserProfileService>();
+            services.AddScoped<IAnnouncementService, AnnouncementService>();
             #endregion
 
             #region External Services
@@ -109,6 +113,7 @@ namespace starter_project_template.StartupExtensions
 
             #region Repositories
             services.AddScoped<IRedisRepository, RedisRepository>();
+            services.AddScoped<IAnnouncementRepository, AnnouncementRepository>();
             #endregion
 
             return services;

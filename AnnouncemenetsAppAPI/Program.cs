@@ -1,5 +1,5 @@
-using starter_project_template.Middlewares;
-using starter_project_template.StartupExtensions;
+using AnnouncemenetsAppAPI.Middlewares;
+using AnnouncemenetsAppAPI.StartupExtensions;
 
 var builder = WebApplication.CreateBuilder(args);
 

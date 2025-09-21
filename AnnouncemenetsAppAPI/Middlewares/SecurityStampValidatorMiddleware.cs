@@ -6,7 +6,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace starter_project_template.Middlewares
+namespace AnnouncemenetsAppAPI.Middlewares
 {
     public class SecurityStampValidatorMiddleware
     {
