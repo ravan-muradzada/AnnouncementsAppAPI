@@ -13,11 +13,11 @@ namespace Domain.Entities
         public string Content { get; set; } = null!;
         public Guid AuthorId { get; set; }
         public ApplicationUser Author { get; set; } = null!;
-        public bool IsPublished { get; set; }
-        public DateTime PublishedAt { get; set; }
+        public bool IsPublished { get; set; } = false;
+        public DateTime? PublishedAt { get; set; } = null;
         public DateTime? ExpiresAt { get; set; }
         public string Category { get; set; } = null!;
-        public bool isPinned { get; set; } 
+        public bool IsPinned { get; set; } = false;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
     }

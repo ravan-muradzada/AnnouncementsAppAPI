@@ -21,7 +21,6 @@ namespace Application.InternalServiceInterfaces
             int pageSize, 
             string? search = null, 
             string? category = null, 
-            bool? isPublished = null, 
             bool? isPinned = null, 
             CancellationToken ct = default);
     }

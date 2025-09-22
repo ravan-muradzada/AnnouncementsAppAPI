@@ -1,8 +1,10 @@
-﻿using Application.DTOs.UserProfile.Request;
+﻿using Application.DTOs.Announcement.Response;
+using Application.DTOs.UserProfile.Request;
 using Application.DTOs.UserProfile.Response;
 using Application.ExternalServiceInterfaces;
 using Application.InternalServiceInterfaces;
 using AutoMapper;
+using Domain.Common;
 using Domain.CustomExceptions;
 using Domain.Entities;
 using Domain.RepositoryInterfaces;
@@ -20,6 +22,7 @@ namespace Application.InternalServices
     {
         #region Fields
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IUserProfileRepository _userProfileRepository;
         private readonly IMapper _mapper;
         private readonly IEmailService _emailService;
         private readonly IRedisRepository _redisRepository;
@@ -27,9 +30,10 @@ namespace Application.InternalServices
         #endregion
 
         #region Constructor
-        public UserProfileService(UserManager<ApplicationUser> userManager, IMapper mapper, IEmailService emailService, IRedisRepository redisRepository, IRefreshTokenService refreshTokenService)
+        public UserProfileService(UserManager<ApplicationUser> userManager, IUserProfileRepository userProfileRepository ,IMapper mapper, IEmailService emailService, IRedisRepository redisRepository, IRefreshTokenService refreshTokenService)
         {
             _userManager = userManager;
+            _userProfileRepository = userProfileRepository;
             _mapper = mapper;
             _emailService = emailService;
             _redisRepository = redisRepository;
@@ -43,6 +47,27 @@ namespace Application.InternalServices
             ApplicationUser? user = await _userManager.FindByIdAsync(userId.ToString());
             if (user is null) throw new ObjectNotFoundException("User not found");
             return _mapper.Map<UserProfileResponse>(user);
+        }
+        #endregion
+
+        #region GetUsersAllAnnouncements
+        public async Task<List<AnnouncementResponse>> GetUsersAllAnnouncements(Guid userId, bool isPublished, CancellationToken ct = default)
+        {
+            List<Announcement> announcements = await _userProfileRepository.GetAllAnnouncementsByUserIdAsync(userId, isPublished, ct);
+            return _mapper.Map<List<AnnouncementResponse>>(announcements);
+        }
+        #endregion
+
+        #region GetUsersPagedAnnouncements
+        public async Task<PagedResult<AnnouncementResponse>> GetUsersPagedAnnouncements(Guid userId, int page,
+            int pageSize,
+            bool isPublished,
+            string? search = null,
+            string? category = null,
+            bool? isPinned = null, CancellationToken ct = default)
+        {
+            var announcements = await _userProfileRepository.GetPagedAnnouncementsByUserIdAsync(userId, page, pageSize, isPublished, search, category, isPinned, ct);
+            return _mapper.Map<PagedResult<AnnouncementResponse>>(announcements);
         }
         #endregion
 

@@ -17,12 +17,10 @@ namespace Domain.RepositoryInterfaces
                 int page, int pageSize,
                 string? search = null,
                 string? category = null,
-                bool? isPublished = null,
                 bool? isPinned = null,
                 CancellationToken ct = default);
         Task<Announcement> UpdateAsync(Announcement announcement, CancellationToken ct = default);
         Task DeleteAsync(Announcement announcement, CancellationToken ct = default);
-        Task<bool> ExistsAsync(Guid id, CancellationToken ct = default);
         Task SaveChangesAsync(Announcement announcement ,CancellationToken ct = default);
     }
 }

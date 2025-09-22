@@ -47,6 +47,9 @@ namespace Application.InternalServices
         public async Task<List<AnnouncementResponse>> GetAllAnnouncements(CancellationToken ct)
         {
             List<Announcement> announcements = await _announcementRepository.GetAllAsync();
+
+            announcements = announcements.FindAll(a => a.IsPublished == true);
+
             return _mapper.Map<List<AnnouncementResponse>>(announcements);
         }
         #endregion
@@ -54,15 +57,20 @@ namespace Application.InternalServices
         #region GetAnnouncement
         public async Task<AnnouncementResponse> GetAnnouncement(Guid announcemenetId, CancellationToken ct = default)
         {
-            Announcement? announcement = await _announcementRepository.GetByIdAsync(announcemenetId, ct) ?? throw new ObjectNotFoundException("Announcemenet Not Found!");
+            Announcement? announcement = await _announcementRepository.GetByIdAsync(announcemenetId, ct);
+            if (announcement == null || announcement.IsPublished == false)
+            {
+                throw new ObjectNotFoundException("Announcement Not Found!");
+            }
+
             return _mapper.Map<AnnouncementResponse>(announcement);
         }
         #endregion
 
         #region GetPagedAnnouncements
-        public async Task<PagedResult<AnnouncementResponse>> GetPagedAnnouncements(int page, int pageSize, string? search = null, string? category = null, bool? isPublished = null, bool? isPinned = null, CancellationToken ct = default)
+        public async Task<PagedResult<AnnouncementResponse>> GetPagedAnnouncements(int page, int pageSize, string? search = null, string? category = null, bool? isPinned = null, CancellationToken ct = default)
         {
-            var pagedResult = await _announcementRepository.GetPagedAsync(page, pageSize, search, category, isPublished, isPinned, ct);
+            var pagedResult = await _announcementRepository.GetPagedAsync(page, pageSize, search, category, isPinned, ct);
             return _mapper.Map<PagedResult<AnnouncementResponse>>(pagedResult);
         }
         #endregion

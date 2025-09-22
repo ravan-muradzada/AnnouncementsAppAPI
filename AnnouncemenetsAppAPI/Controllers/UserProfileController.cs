@@ -108,5 +108,32 @@ namespace AnnouncemenetsAppAPI.Controllers
             });
         }
         #endregion
+
+        #region GetUsersAllAnnouncements
+        [HttpGet]
+        public async Task<IActionResult> GetUsersAllAnnouncements([FromQuery] bool isPublished, CancellationToken ct = default)
+        {
+            Guid userId = User.GetUserId();
+            var response = await _userProfileService.GetUsersAllAnnouncements(userId, isPublished, ct);
+            return Ok(response);
+        }
+        #endregion
+
+        #region GetUsersPagedAnnouncements
+        [HttpGet]
+        public async Task<IActionResult> GetUsersPagedAnnouncements(
+            [FromQuery] int page,
+            [FromQuery] int pageSize,
+            [FromQuery] bool isPublished,
+            [FromQuery] string? search = null,
+            [FromQuery] string? category = null,
+            [FromQuery] bool? isPinned = null,
+            CancellationToken ct = default)
+        {
+            Guid userId = User.GetUserId();
+            var response = await _userProfileService.GetUsersPagedAnnouncements(userId, page, pageSize, isPublished, search, category, isPinned, ct);
+            return Ok(response);
+        }
+        #endregion
     }
 }

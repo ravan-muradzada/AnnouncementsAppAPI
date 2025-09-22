@@ -79,11 +79,10 @@ namespace AnnouncemenetsAppAPI.Controllers
             [FromQuery] int pageSize = 10,
             [FromQuery] string? search = null,
             [FromQuery] string? category = null,
-            [FromQuery] bool? isPublished = null,
             [FromQuery] bool? isPinned = null,
             CancellationToken ct = default)
         {
-            var response = await _announcementService.GetPagedAnnouncements(page, pageSize, search, category, isPublished, isPinned, ct);
+            var response = await _announcementService.GetPagedAnnouncements(page, pageSize, search, category, isPinned, ct);
             return Ok(response);
         }
         #endregion

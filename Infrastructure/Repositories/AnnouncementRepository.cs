@@ -8,66 +8,73 @@ namespace Infrastructure.Repositories
 {
     public class AnnouncementRepository : IAnnouncementRepository
     {
+        #region Fields
         private readonly ApplicationDbContext _dbContext;
+        #endregion
 
+        #region Constructor
         public AnnouncementRepository(ApplicationDbContext dbContext)
         {
             _dbContext = dbContext;
         }
+        #endregion
 
+        #region AddAsync
         public async Task<Announcement> AddAync(Announcement announcement, CancellationToken ct = default)
         {
             await _dbContext.Announcements.AddAsync(announcement, ct);
             await _dbContext.SaveChangesAsync();
             return announcement;
         }
+        #endregion
 
+        #region DeleteAsync
         public async Task DeleteAsync(Announcement announcement, CancellationToken ct = default)
         {
             _dbContext.Announcements.Remove(announcement);
             await _dbContext.SaveChangesAsync();
         }
+        #endregion
 
-        public async Task<bool> ExistsAsync(Guid id, CancellationToken ct = default)
-        {
-            Announcement? announcement = await _dbContext.Announcements.FirstOrDefaultAsync(x => x.Id == id);
-            return announcement is not null;
-        }
-
+        #region GetAllAsync
         public async Task<List<Announcement>> GetAllAsync(CancellationToken ct = default)
         {
-            List<Announcement> announcements = await _dbContext.Announcements.ToListAsync();
+            List<Announcement> announcements = await _dbContext.Announcements
+                .Where(announcement => announcement.IsPublished)
+                .OrderByDescending(announcement => announcement.CreatedAt)
+                .ToListAsync(ct);
             return announcements;
         }
+        #endregion
 
+        #region GetByIdAsync
         public async Task<Announcement?> GetByIdAsync(Guid id, CancellationToken ct = default)
         {
-            Announcement? announcement = await _dbContext.Announcements.FirstOrDefaultAsync(a => a.Id == id);
+            Announcement? announcement = await _dbContext.Announcements.FirstOrDefaultAsync(a => a.Id == id && a.IsPublished);
             return announcement;
         }
+        #endregion
 
-        public async Task<PagedResult<Announcement>> GetPagedAsync(int page, int pageSize, string? search = null, string? category = null, bool? isPublished = null, bool? isPinned = null, CancellationToken ct = default)
+        #region GetPagedAsync
+        public async Task<PagedResult<Announcement>> GetPagedAsync(int page, int pageSize, string? search = null, string? category = null, bool? isPinned = null, CancellationToken ct = default)
         {
             var announcements = _dbContext.Announcements.AsQueryable();
 
+            announcements = announcements.Where(a => a.IsPublished);
+
             if (search is not null)
             {
-                announcements = (IQueryable<Announcement>)announcements.Where(a => a.Title.Contains(search) || a.Content.Contains(search)).ToList();
+                announcements = announcements.Where(a => a.Title.Contains(search) || a.Content.Contains(search));
             }
 
             if (category is not null)
             {
-                announcements = (IQueryable<Announcement>)announcements.Where(a => a.Category == category).ToList();
-            }
-
-            if (isPublished.HasValue)
-            {
-                announcements = (IQueryable<Announcement>)announcements.Where(a => a.IsPublished == isPublished).ToList();
+                announcements = announcements.Where(a => a.Category == category);
             }
 
             if (isPinned.HasValue)
             {
-                announcements = (IQueryable<Announcement>)announcements.Where(a => a.isPinned == isPinned).ToList();
+                announcements = announcements.Where(a => a.IsPinned == isPinned);
             }
 
             var totalCount = await announcements.CountAsync(ct);
@@ -79,18 +86,23 @@ namespace Infrastructure.Repositories
 
             return new PagedResult<Announcement>(items, totalCount, page, pageSize);
         }
+        #endregion
 
+        #region SaveChangesAsync
         public async Task SaveChangesAsync(Announcement announcement, CancellationToken ct = default)
         {
             _dbContext.Announcements.Update(announcement);
             await _dbContext.SaveChangesAsync(ct);
         }
+        #endregion
 
+        #region UpdateAsync
         public async Task<Announcement> UpdateAsync(Announcement announcement, CancellationToken ct = default)
         {
             _dbContext.Announcements.Update(announcement);
             await _dbContext.SaveChangesAsync();
             return announcement;
         }
+        #endregion
     }
 }
