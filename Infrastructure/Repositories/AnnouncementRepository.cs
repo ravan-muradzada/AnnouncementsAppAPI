@@ -37,30 +37,61 @@ namespace Infrastructure.Repositories
         #endregion
 
         #region GetAllAsync
-        public async Task<List<Announcement>> GetAllAsync(CancellationToken ct = default)
+        public async Task<List<Announcement>> GetAllAsync(Guid? userId = null, bool? isPublished = null, CancellationToken ct = default)
         {
-            List<Announcement> announcements = await _dbContext.Announcements
-                .Where(announcement => announcement.IsPublished)
-                .OrderByDescending(announcement => announcement.CreatedAt)
-                .ToListAsync(ct);
-            return announcements;
+            var query = _dbContext.Announcements.AsQueryable();
+
+            if (userId is not null)
+            {
+                query = query.Where(a => a.AuthorId == userId);
+            }
+
+            if (isPublished is not null)
+            {
+                query = query.Where(a => a.IsPublished == isPublished);
+            }
+
+            return await query.
+                OrderByDescending(a => a.CreatedAt)
+                .ToListAsync();
         }
         #endregion
 
         #region GetByIdAsync
-        public async Task<Announcement?> GetByIdAsync(Guid id, CancellationToken ct = default)
+        public async Task<Announcement?> GetByIdAsync(Guid announcementId, Guid? userId = null, bool? isPublished = null, CancellationToken ct = default)
         {
-            Announcement? announcement = await _dbContext.Announcements.FirstOrDefaultAsync(a => a.Id == id && a.IsPublished);
-            return announcement;
+            var query = _dbContext.Announcements.AsQueryable();
+
+            query = query.Where(a => a.Id == announcementId);
+
+            if (userId is not null)
+            {
+                query = query.Where(a => a.AuthorId == userId);
+            }
+
+            if (isPublished is not null)
+            {
+                query = query.Where(a => a.IsPublished == isPublished);
+            }
+            return await query.FirstOrDefaultAsync(ct);
         }
         #endregion
 
         #region GetPagedAsync
-        public async Task<PagedResult<Announcement>> GetPagedAsync(int page, int pageSize, string? search = null, string? category = null, bool? isPinned = null, CancellationToken ct = default)
+        public async Task<PagedResult<Announcement>> GetPagedAsync(int page, int pageSize, Guid? userId = null, bool? isPublished = null, string? search = null, string? category = null, bool? isPinned = null, CancellationToken ct = default)
         {
             var announcements = _dbContext.Announcements.AsQueryable();
 
-            announcements = announcements.Where(a => a.IsPublished);
+
+            if (userId is not null)
+            {
+                announcements = announcements.Where(a => a.AuthorId == userId);
+            }
+
+            if (isPublished is not null)
+            {
+                announcements = announcements.Where(a => a.IsPublished == isPublished);
+            }
 
             if (search is not null)
             {
@@ -82,6 +113,7 @@ namespace Infrastructure.Repositories
             var items = await announcements
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
+                .OrderByDescending(a => a.CreatedAt)
                 .ToListAsync(ct);
 
             return new PagedResult<Announcement>(items, totalCount, page, pageSize);
@@ -97,9 +129,11 @@ namespace Infrastructure.Repositories
         #endregion
 
         #region UpdateAsync
-        public async Task<Announcement> UpdateAsync(Announcement announcement, CancellationToken ct = default)
+        public async Task<Announcement> UpdateAsync(Announcement announcement, bool isPublished ,CancellationToken ct = default)
         {
             _dbContext.Announcements.Update(announcement);
+            announcement.UpdatedAt = DateTime.UtcNow;
+            announcement.IsPublished = isPublished;
             await _dbContext.SaveChangesAsync();
             return announcement;
         }

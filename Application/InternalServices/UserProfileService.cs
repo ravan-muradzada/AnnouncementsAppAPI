@@ -1,4 +1,5 @@
-﻿using Application.DTOs.Announcement.Response;
+﻿using Application.DTOs.Announcement.Request;
+using Application.DTOs.Announcement.Response;
 using Application.DTOs.UserProfile.Request;
 using Application.DTOs.UserProfile.Response;
 using Application.ExternalServiceInterfaces;
@@ -22,7 +23,7 @@ namespace Application.InternalServices
     {
         #region Fields
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly IUserProfileRepository _userProfileRepository;
+        private readonly IAnnouncementRepository _announcementRepository;
         private readonly IMapper _mapper;
         private readonly IEmailService _emailService;
         private readonly IRedisRepository _redisRepository;
@@ -30,10 +31,10 @@ namespace Application.InternalServices
         #endregion
 
         #region Constructor
-        public UserProfileService(UserManager<ApplicationUser> userManager, IUserProfileRepository userProfileRepository ,IMapper mapper, IEmailService emailService, IRedisRepository redisRepository, IRefreshTokenService refreshTokenService)
+        public UserProfileService(UserManager<ApplicationUser> userManager, IAnnouncementRepository announcementRepository ,IMapper mapper, IEmailService emailService, IRedisRepository redisRepository, IRefreshTokenService refreshTokenService)
         {
             _userManager = userManager;
-            _userProfileRepository = userProfileRepository;
+            _announcementRepository = announcementRepository;
             _mapper = mapper;
             _emailService = emailService;
             _redisRepository = redisRepository;
@@ -50,10 +51,64 @@ namespace Application.InternalServices
         }
         #endregion
 
+        #region CreateAnnouncement
+        public async Task<AnnouncementResponse> CreateAnnouncement(Guid userId, CreateAnnouncementRequest request, CancellationToken ct = default)
+        {
+            Announcement announcement = _mapper.Map<Announcement>(request);
+            Announcement response = await _announcementRepository.AddAync(announcement, ct);
+
+            return _mapper.Map<AnnouncementResponse>(response);
+        }
+        #endregion
+
+        #region DeleteAnnouncement
+        public async Task DeleteAnnouncement(Guid userId, Guid announcementId, CancellationToken ct)
+        {
+            Announcement? announcement = await _announcementRepository.GetByIdAsync(announcementId) ?? throw new ObjectNotFoundException("Announcemenet Not Found!");
+
+            await _announcementRepository.DeleteAsync(announcement);
+        }
+        #endregion
+
+        #region UpdateAnnouncement
+        public async Task<AnnouncementResponse> UpdateAnnouncement(Guid userId, Guid announcementId, UpdateAnnouncementRequest request, CancellationToken ct = default)
+        {
+            Announcement? announcement = await _announcementRepository.GetByIdAsync(announcementId, userId, null, ct) ?? throw new ObjectNotFoundException("Announcement Not Found!");
+
+            if (request.Equals(null))
+            {
+                return _mapper.Map<AnnouncementResponse>(announcement);
+            }
+
+            if (request.Title is not null && announcement.Title != request.Title)
+            {
+                announcement.Title = request.Title;
+            }
+
+            if (request.Content is not null && announcement.Content != request.Content)
+            {
+                announcement.Content = request.Content;
+            }
+
+            if (request.Category is not null && announcement.Category != request.Category)
+            {
+                announcement.Category = request.Category;
+            }
+
+            if (request.ExpiresAt is not null && announcement.ExpiresAt != request.ExpiresAt)
+            {
+                announcement.ExpiresAt = request.ExpiresAt;
+            }
+            announcement.IsPublished = false;
+            await _announcementRepository.SaveChangesAsync(announcement, ct);
+            return _mapper.Map<AnnouncementResponse>(announcement);
+        }
+        #endregion
+
         #region GetUsersAllAnnouncements
         public async Task<List<AnnouncementResponse>> GetUsersAllAnnouncements(Guid userId, bool isPublished, CancellationToken ct = default)
         {
-            List<Announcement> announcements = await _userProfileRepository.GetAllAnnouncementsByUserIdAsync(userId, isPublished, ct);
+            List<Announcement> announcements = await _announcementRepository.GetAllAsync(userId, isPublished, ct);
             return _mapper.Map<List<AnnouncementResponse>>(announcements);
         }
         #endregion
@@ -66,8 +121,16 @@ namespace Application.InternalServices
             string? category = null,
             bool? isPinned = null, CancellationToken ct = default)
         {
-            var announcements = await _userProfileRepository.GetPagedAnnouncementsByUserIdAsync(userId, page, pageSize, isPublished, search, category, isPinned, ct);
+            var announcements = await _announcementRepository.GetPagedAsync(page, pageSize, userId, isPublished, search, category, isPinned, ct);
             return _mapper.Map<PagedResult<AnnouncementResponse>>(announcements);
+        }
+        #endregion
+
+        #region GetAnnouncementById
+        public async Task<AnnouncementResponse> GetAnnouncementById(Guid userId, Guid announcementId, CancellationToken ct = default)
+        {
+            Announcement? announcement = await _announcementRepository.GetByIdAsync(announcementId, userId, null, ct) ?? throw new ObjectNotFoundException("Announcement Not Found!");
+            return _mapper.Map<AnnouncementResponse>(announcement);
         }
         #endregion
 

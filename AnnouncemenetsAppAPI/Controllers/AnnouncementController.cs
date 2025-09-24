@@ -24,36 +24,6 @@ namespace AnnouncemenetsAppAPI.Controllers
         }
         #endregion
 
-        #region CreateAnnouncement
-        [HttpPost]
-        public async Task<IActionResult> CreateAnnouncement(CreateAnnouncementRequest request, CancellationToken ct)
-        {
-            Guid userId = User.GetUserId();
-            AnnouncementResponse response = await _announcementService.CreateAnnouncement(userId, request, ct);
-            return Ok(response);
-        }
-        #endregion
-
-        #region DeleteAnnouncement
-        [HttpDelete("{announcementId:guid}")]
-        public async Task<IActionResult> DeleteAnnouncement(Guid announcementId, CancellationToken ct)
-        {
-            Guid userId = User.GetUserId();
-            await _announcementService.DeleteAnnouncement(userId, announcementId, ct);
-            return NoContent();
-        }
-        #endregion
-
-        #region UpdateAnnouncement
-        [HttpPut("{announcementId:guid}")]
-        public async Task<IActionResult> UpdateAnnouncement(Guid announcementId, UpdateAnnouncementRequest request, CancellationToken ct)
-        {
-            Guid userId = User.GetUserId();
-            AnnouncementResponse response = await _announcementService.UpdateAnnouncement(userId, announcementId, request, ct);
-            return Ok(response);
-        }
-        #endregion
-
         #region GetAnnouncement
         [HttpGet("{announcementId:guid}")]
         public async Task<IActionResult> GetAnnouncement(Guid announcementId, CancellationToken ct)

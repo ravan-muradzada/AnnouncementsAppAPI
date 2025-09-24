@@ -95,6 +95,7 @@ namespace AnnouncemenetsAppAPI.StartupExtensions
             services.AddScoped<ITwoFactorService, TwoFactorService>();
             services.AddScoped<IUserProfileService, UserProfileService>();
             services.AddScoped<IAnnouncementService, AnnouncementService>();
+            services.AddScoped<IAdminService, AdminService>();
             #endregion
 
             #region External Services

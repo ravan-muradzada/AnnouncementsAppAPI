@@ -11,10 +11,7 @@ namespace Application.InternalServiceInterfaces
 {
     public interface IAnnouncementService
     {
-        Task<AnnouncementResponse> CreateAnnouncement(Guid userId, CreateAnnouncementRequest request, CancellationToken ct = default);
         Task<AnnouncementResponse> GetAnnouncement(Guid announcemenetId, CancellationToken ct = default);
-        Task<AnnouncementResponse> UpdateAnnouncement(Guid userId, Guid announcementId, UpdateAnnouncementRequest request, CancellationToken ct = default);
-        Task DeleteAnnouncement(Guid userId, Guid announcementId, CancellationToken ct);
         Task<List<AnnouncementResponse>> GetAllAnnouncements(CancellationToken ct);
         Task<PagedResult<AnnouncementResponse>> GetPagedAnnouncements(
             int page, 

@@ -1,4 +1,6 @@
 ﻿using AnnouncemenetsAppAPI.Extensions;
+using Application.DTOs.Announcement.Request;
+using Application.DTOs.Announcement.Response;
 using Application.DTOs.UserProfile.Request;
 using Application.DTOs.UserProfile.Response;
 using Application.InternalServiceInterfaces;
@@ -132,6 +134,36 @@ namespace AnnouncemenetsAppAPI.Controllers
         {
             Guid userId = User.GetUserId();
             var response = await _userProfileService.GetUsersPagedAnnouncements(userId, page, pageSize, isPublished, search, category, isPinned, ct);
+            return Ok(response);
+        }
+        #endregion
+
+        #region CreateAnnouncement
+        [HttpPost]
+        public async Task<IActionResult> CreateAnnouncement(CreateAnnouncementRequest request, CancellationToken ct)
+        {
+            Guid userId = User.GetUserId();
+            AnnouncementResponse response = await _userProfileService.CreateAnnouncement(userId, request, ct);
+            return Ok(response);
+        }
+        #endregion
+
+        #region DeleteAnnouncement
+        [HttpDelete("{announcementId:guid}")]
+        public async Task<IActionResult> DeleteAnnouncement(Guid announcementId, CancellationToken ct)
+        {
+            Guid userId = User.GetUserId();
+            await _userProfileService.DeleteAnnouncement(userId, announcementId, ct);
+            return NoContent();
+        }
+        #endregion
+
+        #region UpdateAnnouncement
+        [HttpPut("{announcementId:guid}")]
+        public async Task<IActionResult> UpdateAnnouncement(Guid announcementId, UpdateAnnouncementRequest request, CancellationToken ct)
+        {
+            Guid userId = User.GetUserId();
+            AnnouncementResponse response = await _userProfileService.UpdateAnnouncement(userId, announcementId, request, ct);
             return Ok(response);
         }
         #endregion

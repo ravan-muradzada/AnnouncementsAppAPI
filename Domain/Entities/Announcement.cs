@@ -11,7 +11,7 @@ namespace Domain.Entities
         public Guid Id { get; set; } = Guid.NewGuid();
         public string Title { get; set; } = null!;
         public string Content { get; set; } = null!;
-        public Guid AuthorId { get; set; }
+        public Guid AuthorId { get; set; } 
         public ApplicationUser Author { get; set; } = null!;
         public bool IsPublished { get; set; } = false;
         public DateTime? PublishedAt { get; set; } = null;
