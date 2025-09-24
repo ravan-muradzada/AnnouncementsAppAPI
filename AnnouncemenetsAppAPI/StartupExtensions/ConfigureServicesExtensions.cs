@@ -1,7 +1,9 @@
 ﻿using AnnouncemenetsAppAPI.Filters.ExceptionFilters;
 using Application.ExternalServiceInterfaces;
 using Application.InternalServiceInterfaces;
+using Application.InternalServiceInterfaces.IUserProfileServices;
 using Application.InternalServices;
+using Application.InternalServices.UserProfileServices;
 using Application.Mappings;
 using Domain.Entities;
 using Domain.RepositoryInterfaces;
@@ -90,10 +92,15 @@ namespace AnnouncemenetsAppAPI.StartupExtensions
             #endregion
 
             #region Internal Services
+            // User Profile Services
+            services.AddScoped<IUserInfo_UserProfileService, UserInfo_UserProfileService>();
+            services.AddScoped<ITwoFactorAuth_UserProfileService, TwoFactorAuth_UserProfileService>();
+            services.AddScoped<IAnnouncement_UserProfileService, Announcement_UserProfileService>();
+
+            // Other Services
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IRefreshTokenService, RefreshTokenService>();
             services.AddScoped<ITwoFactorService, TwoFactorService>();
-            services.AddScoped<IUserProfileService, UserProfileService>();
             services.AddScoped<IAnnouncementService, AnnouncementService>();
             services.AddScoped<IAdminService, AdminService>();
             #endregion
