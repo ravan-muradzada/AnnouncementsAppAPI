@@ -13,5 +13,6 @@ namespace Domain.Entities
         public int currentCountOfChange { get; set; } = 0;
         public DateTime? LimitDate { get; set; }
         public List<Announcement> Announcements { get; set; } = new List<Announcement>();
+        public List<AnnouncementUser> JoinedAnnouncements { get; set; } = new List<AnnouncementUser>();
     }
 }

@@ -14,6 +14,7 @@ namespace Infrastructure.Persistance
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
         public DbSet<Announcement> Announcements { get; set; }
+        public DbSet<AnnouncementUser> AnnouncementUsers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -47,6 +48,24 @@ namespace Infrastructure.Persistance
 
             builder.Entity<ApplicationUser>().HasIndex(u => u.UserName).IsUnique();
             builder.Entity<ApplicationUser>().HasIndex(u => u.Email).IsUnique();
+
+            builder.Entity<Announcement>()
+            .HasOne(a => a.Author)
+            .WithMany(u => u.Announcements)
+            .HasForeignKey(a => a.AuthorId);
+
+            builder.Entity<AnnouncementUser>()
+                .HasKey(au => new { au.ApplicationUserId, au.AnnouncementId });
+
+            builder.Entity<AnnouncementUser>()
+                .HasOne(au => au.Announcement)
+                .WithMany(a => a.JoinedUsers)
+                .HasForeignKey(au => au.AnnouncementId);
+
+            builder.Entity<AnnouncementUser>()
+                .HasOne(au => au.User)
+                .WithMany(au => au.JoinedAnnouncements)
+                .HasForeignKey(au => au.ApplicationUserId);
         }
     }
 }

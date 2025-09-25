@@ -103,6 +103,7 @@ namespace AnnouncemenetsAppAPI.StartupExtensions
             services.AddScoped<ITwoFactorService, TwoFactorService>();
             services.AddScoped<IAnnouncementService, AnnouncementService>();
             services.AddScoped<IAdminService, AdminService>();
+            services.AddScoped<IJoinService, JoinService>();    
             #endregion
 
             #region External Services
@@ -122,6 +123,7 @@ namespace AnnouncemenetsAppAPI.StartupExtensions
             #region Repositories
             services.AddScoped<IRedisRepository, RedisRepository>();
             services.AddScoped<IAnnouncementRepository, AnnouncementRepository>();
+            services.AddScoped<IJoinRepository, JoinRepository>();
             #endregion
 
             return services;

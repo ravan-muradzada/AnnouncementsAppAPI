@@ -138,5 +138,13 @@ namespace Infrastructure.Repositories
             return announcement;
         }
         #endregion
+
+        #region ExistsAsync
+        public async Task<bool> ExistsAsync(Guid announcementId)
+        {
+            Announcement? announcement = await _dbContext.Announcements.FirstOrDefaultAsync(a => a.Id == announcementId);
+            return announcement is not null;
+        }
+        #endregion
     }
 }

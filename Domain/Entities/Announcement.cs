@@ -20,5 +20,6 @@ namespace Domain.Entities
         public bool IsPinned { get; set; } = false;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+        public List<AnnouncementUser> JoinedUsers { get; set; } = new List<AnnouncementUser>();
     }
 }
