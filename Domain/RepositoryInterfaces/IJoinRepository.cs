@@ -13,5 +13,7 @@ namespace Domain.RepositoryInterfaces
         Task LeaveAnnouncementAsync(AnnouncementUser announcementUser);
         Task<bool> CheckJoin(Guid announcementId, Guid userId);  
         Task<AnnouncementUser?> GetAnnouncementUserAsync(Guid announcementId, Guid userId);
+        Task<List<AnnouncementUser>> GetAnnouncementUsers(Guid announcementId);
+        Task DisjoinUserFromAnnouncement(AnnouncementUser announcementUser);
     }
 }

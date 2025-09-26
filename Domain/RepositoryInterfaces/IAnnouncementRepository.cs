@@ -22,6 +22,6 @@ namespace Domain.RepositoryInterfaces
         Task<Announcement> UpdateAsync(Announcement announcement, bool isPublished, CancellationToken ct = default);
         Task DeleteAsync(Announcement announcement, CancellationToken ct = default);
         Task SaveChangesAsync(Announcement announcement, CancellationToken ct = default);
-        Task<bool> ExistsAsync(Guid announcementId);
+        Task<bool> ExistsAsync(Guid announcementId, Guid? userId = null, CancellationToken ct = default);
     }
 }

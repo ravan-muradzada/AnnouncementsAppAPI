@@ -134,16 +134,24 @@ namespace Infrastructure.Repositories
             _dbContext.Announcements.Update(announcement);
             announcement.UpdatedAt = DateTime.UtcNow;
             announcement.IsPublished = isPublished;
-            await _dbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync(ct);
             return announcement;
         }
         #endregion
 
         #region ExistsAsync
-        public async Task<bool> ExistsAsync(Guid announcementId)
+        public async Task<bool> ExistsAsync(Guid announcementId, Guid? userId = null, CancellationToken ct = default)
         {
-            Announcement? announcement = await _dbContext.Announcements.FirstOrDefaultAsync(a => a.Id == announcementId);
-            return announcement is not null;
+            var query = _dbContext.Announcements.AsQueryable();
+
+            query = query.Where(a => a.Id == announcementId);
+            
+            if (userId is not null)
+            {
+                query = query.Where(a => a.AuthorId == userId);
+            }
+
+            return await query.AnyAsync(ct);
         }
         #endregion
     }

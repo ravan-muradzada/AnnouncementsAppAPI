@@ -10,9 +10,8 @@ namespace Domain.Entities
     {
         public Guid ApplicationUserId { get; set; }
         public ApplicationUser User { get; set; } = null!;
-
         public Guid AnnouncementId { get; set; }
         public Announcement Announcement { get; set; } = null!;
-        public DateTime? JoinedAt = DateTime.UtcNow;
+        public DateTime JoinedAt = DateTime.UtcNow;
     }
 }

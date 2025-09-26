@@ -28,9 +28,10 @@ namespace Application.InternalServices
         }
         #endregion
 
-        public async Task JoinAnnouncementAsync(Guid announcementId, Guid userId)
+        #region JoinAnnouncementAsync
+        public async Task JoinAnnouncementAsync(Guid announcementId, Guid userId, CancellationToken ct = default)
         {
-            if (!(await _announcementRepository.ExistsAsync(announcementId)) || (await _userManager.FindByIdAsync(userId.ToString()) is null))
+            if (!(await _announcementRepository.ExistsAsync(announcementId, null, default)) || (await _userManager.FindByIdAsync(userId.ToString()) is null))
             {
                 throw new ObjectNotFoundException("User or announcement Not Found!");
             }
@@ -47,10 +48,12 @@ namespace Application.InternalServices
             };
             await _joinRepository.JoinAnnouncementAsync(announcementUser);
         }
+        #endregion
 
-        public async Task LeaveAnnouncementAsync(Guid announcementId, Guid userId)
+        #region LeaveAnnouncementAsync
+        public async Task LeaveAnnouncementAsync(Guid announcementId, Guid userId, CancellationToken ct = default)
         {
-            if (!(await _announcementRepository.ExistsAsync(announcementId)) || (await _userManager.FindByIdAsync(userId.ToString()) is null))
+            if (!(await _announcementRepository.ExistsAsync(announcementId, null, default)) || (await _userManager.FindByIdAsync(userId.ToString()) is null))
             {
                 throw new ObjectNotFoundException("User or announcement Not Found!");
             }
@@ -59,5 +62,6 @@ namespace Application.InternalServices
 
             await _joinRepository.LeaveAnnouncementAsync(announcementUser);
         }
+        #endregion
     }
 }

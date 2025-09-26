@@ -53,7 +53,24 @@ namespace Infrastructure.Repositories
         {
             return await _dbContext.AnnouncementUsers.FirstOrDefaultAsync(au => au.AnnouncementId == announcementId && au.ApplicationUserId == userId);
         }
+        #endregion
 
+        #region GetAnnouncementUsersAsync
+        public async Task<List<AnnouncementUser>> GetAnnouncementUsers(Guid announcementId)
+        {
+            return await _dbContext.AnnouncementUsers
+                .Where(au => au.AnnouncementId == announcementId)
+                .Include(au => au.User.UserName)
+                .ToListAsync();
+        }
+        #endregion
+
+        #region DisjoinUserFromAnnouncement
+        public async Task DisjoinUserFromAnnouncement(AnnouncementUser announcementUser)
+        {
+            _dbContext.AnnouncementUsers.Remove(announcementUser);
+            await _dbContext.SaveChangesAsync();
+        }
         #endregion
     }
 }

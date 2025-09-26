@@ -1,6 +1,7 @@
 ﻿using AnnouncemenetsAppAPI.Extensions;
 using Application.DTOs.Announcement.Request;
 using Application.DTOs.Announcement.Response;
+using Application.DTOs.Participant.Response;
 using Application.DTOs.UserProfile.Request;
 using Application.DTOs.UserProfile.Response;
 using Application.InternalServiceInterfaces.IUserProfileServices;
@@ -18,20 +19,22 @@ namespace AnnouncemenetsAppAPI.Controllers
         private readonly IUserInfo_UserProfileService _userInfo_UserProfileService;
         private readonly ITwoFactorAuth_UserProfileService _twoFactorAuth_UserProfileService;
         private readonly IAnnouncement_UserProfileService _announcement_UserProfileService;
+        private readonly IJoin_UserProfileService _join_UserProfileService;
         #endregion
 
         #region Constructor
-        public UserProfileController(IUserInfo_UserProfileService userInfo_UserProfileService, ITwoFactorAuth_UserProfileService twoFactorAuth_UserProfileService, IAnnouncement_UserProfileService announcement_UserProfileService)
+        public UserProfileController(IUserInfo_UserProfileService userInfo_UserProfileService, ITwoFactorAuth_UserProfileService twoFactorAuth_UserProfileService, IAnnouncement_UserProfileService announcement_UserProfileService, IJoin_UserProfileService join_UserProfileService)
         {
             _userInfo_UserProfileService = userInfo_UserProfileService;
             _twoFactorAuth_UserProfileService = twoFactorAuth_UserProfileService;
             _announcement_UserProfileService = announcement_UserProfileService;
+            _join_UserProfileService = join_UserProfileService;
         }
         #endregion
 
         #region GetUserProfile
         [HttpGet]
-        public async Task<IActionResult> GetUserProfile()
+        public async Task<IActionResult> GetUserProfile(CancellationToken ct = default)
         {
             Guid userId = User.GetUserId();
             UserProfileResponse response = await _userInfo_UserProfileService.GetUser(userId);
@@ -41,7 +44,7 @@ namespace AnnouncemenetsAppAPI.Controllers
 
         #region ChangeEmail
         [HttpPost]
-        public async Task<IActionResult> ChangeEmail(ChangeEmailRequest request)
+        public async Task<IActionResult> ChangeEmail(ChangeEmailRequest request, CancellationToken ct = default)
         {
             Guid userId = User.GetUserId();
             await _userInfo_UserProfileService.ChangeEmail(userId, request);
@@ -54,7 +57,7 @@ namespace AnnouncemenetsAppAPI.Controllers
 
         #region VerifyEmailChange
         [HttpPut]
-        public async Task<IActionResult> VerifyEmailChange(VerifyEmailChangeRequest request)
+        public async Task<IActionResult> VerifyEmailChange(VerifyEmailChangeRequest request, CancellationToken ct = default)
         {
             Guid userId = User.GetUserId();
             UserProfileResponse response = await _userInfo_UserProfileService.VerifyEmailChange(userId, request);
@@ -64,7 +67,7 @@ namespace AnnouncemenetsAppAPI.Controllers
 
         #region ChangeUsername
         [HttpPut]
-        public async Task<IActionResult> ChangeUsername(ChangeUsernameRequest request)
+        public async Task<IActionResult> ChangeUsername(ChangeUsernameRequest request, CancellationToken ct = default)
         {
             Guid userId = User.GetUserId();
             UserProfileResponse response = await _userInfo_UserProfileService.ChangeUsername(userId, request);
@@ -74,7 +77,7 @@ namespace AnnouncemenetsAppAPI.Controllers
 
         #region ChangePassword
         [HttpPut]
-        public async Task<IActionResult> ChangePassword(ChangePasswordRequest request)
+        public async Task<IActionResult> ChangePassword(ChangePasswordRequest request, CancellationToken ct = default)
         {
             Guid userId = User.GetUserId();
             await _userInfo_UserProfileService.ChangePassword(userId, request);
@@ -87,7 +90,7 @@ namespace AnnouncemenetsAppAPI.Controllers
 
         #region EnableTwoFactorAuth
         [HttpPost]
-        public async Task<IActionResult> EnableTwoFactorAuth()
+        public async Task<IActionResult> EnableTwoFactorAuth(CancellationToken ct = default)
         {
             Guid userId = User.GetUserId();
             await _twoFactorAuth_UserProfileService.EnableTwoFactorAuth(userId);
@@ -101,7 +104,7 @@ namespace AnnouncemenetsAppAPI.Controllers
 
         #region DisableTwoFactorAuth
         [HttpPost]
-        public async Task<IActionResult> DisableTwoFactorAuth()
+        public async Task<IActionResult> DisableTwoFactorAuth(CancellationToken ct = default)
         {
             Guid userId = User.GetUserId();
             await _twoFactorAuth_UserProfileService.DisableTwoFactorAuth(userId);
@@ -167,6 +170,29 @@ namespace AnnouncemenetsAppAPI.Controllers
             Guid userId = User.GetUserId();
             AnnouncementResponse response = await _announcement_UserProfileService.UpdateAnnouncement(userId, announcementId, request, ct);
             return Ok(response);
+        }
+        #endregion
+
+        #region GetJoinedUserLists
+        [HttpGet("{authorId:guid}")]
+        public async Task<IActionResult> GetJoinedUserLists(Guid authorId, CancellationToken ct = default)
+        {
+            Guid userId = User.GetUserId();
+            List<JoinedUserResponse> response = await _join_UserProfileService.GetJoinedUsersList(userId, authorId, ct);
+            return Ok(response);
+        }
+        #endregion
+
+        #region RemoveUserFromGroup
+        [HttpDelete("{announcementId:guid}/{userId:guid}")]
+        public async Task<IActionResult> RemoveUserFromGroup(Guid announcementId, Guid userId, CancellationToken ct = default)
+        {
+            Guid authorId = User.GetUserId();
+            await _join_UserProfileService.RemoveUserFromGroup(authorId, announcementId, userId, ct);
+            return Ok(new
+            {
+                Message = "User removed from the group successfully!"
+            });
         }
         #endregion
     }

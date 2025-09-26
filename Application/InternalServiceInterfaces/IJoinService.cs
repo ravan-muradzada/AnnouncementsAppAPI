@@ -8,7 +8,7 @@ namespace Application.InternalServiceInterfaces
 {
     public interface IJoinService
     {
-        Task JoinAnnouncementAsync(Guid announcementId, Guid userId);
-        Task LeaveAnnouncementAsync(Guid announcementId, Guid userId);
+        Task JoinAnnouncementAsync(Guid announcementId, Guid userId, CancellationToken ct = default);
+        Task LeaveAnnouncementAsync(Guid announcementId, Guid userId, CancellationToken ct = default);
     }
 }
