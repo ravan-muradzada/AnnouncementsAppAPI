@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,9 +10,12 @@ namespace Domain.Entities
 {
     public class Announcement
     {
+        [Key]
         public Guid Id { get; set; } = Guid.NewGuid();
         public string Title { get; set; } = null!;
         public string Content { get; set; } = null!;
+
+        [ForeignKey("ApplicationUser")]
         public Guid AuthorId { get; set; } 
         public ApplicationUser Author { get; set; } = null!;
         public bool IsPublished { get; set; } = false;

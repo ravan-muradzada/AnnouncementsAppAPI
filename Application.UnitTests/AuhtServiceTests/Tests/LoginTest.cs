@@ -42,7 +42,7 @@ namespace Application.UnitTests.AuhtServiceTests.Tests
             _refreshTokenServiceMock.Verify(rts => rts.GenerateRefreshToken(It.IsAny<Guid>()), Times.Once);
             _userManagerMock.Verify(um => um.UpdateAsync(It.IsAny<ApplicationUser>()), Times.Once);
             _userManagerMock.Verify(um => um.GetTwoFactorEnabledAsync(It.IsAny<ApplicationUser>()), Times.Once);
-            _twoFactorServiceMock.Verify(tfs => tfs.SendTwoFactorCode(It.IsAny<ApplicationUser>()), Times.Never);
+            _twoFactorServiceMock.Verify(tfs => tfs.SendTwoFactorCode(It.IsAny<ApplicationUser>(), default), Times.Never);
         }
         #endregion
 
@@ -99,7 +99,7 @@ namespace Application.UnitTests.AuhtServiceTests.Tests
                 .ReturnsAsync(true);
             _userManagerMock.Setup(um => um.GetTwoFactorEnabledAsync(It.IsAny<ApplicationUser>()))
                 .ReturnsAsync(true);
-            _twoFactorServiceMock.Setup(tfs => tfs.SendTwoFactorCode(It.IsAny<ApplicationUser>()));
+            _twoFactorServiceMock.Setup(tfs => tfs.SendTwoFactorCode(It.IsAny<ApplicationUser>(), default));
 
             var response = await _authService.Login(request);
 
@@ -111,7 +111,7 @@ namespace Application.UnitTests.AuhtServiceTests.Tests
             _refreshTokenServiceMock.Verify(rts => rts.GenerateRefreshToken(It.IsAny<Guid>()), Times.Never);
             _userManagerMock.Verify(um => um.UpdateAsync(It.IsAny<ApplicationUser>()), Times.Never);
             _userManagerMock.Verify(um => um.GetTwoFactorEnabledAsync(It.IsAny<ApplicationUser>()), Times.Once);
-            _twoFactorServiceMock.Verify(tfs => tfs.SendTwoFactorCode(It.IsAny<ApplicationUser>()), Times.Once);
+            _twoFactorServiceMock.Verify(tfs => tfs.SendTwoFactorCode(It.IsAny<ApplicationUser>(), default), Times.Once);
         }
         #endregion
     }
