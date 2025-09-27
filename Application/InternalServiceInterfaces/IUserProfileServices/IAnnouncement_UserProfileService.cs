@@ -13,7 +13,7 @@ namespace Application.InternalServiceInterfaces.IUserProfileServices
     {
         Task<AnnouncementResponse> CreateAnnouncement(Guid userId, CreateAnnouncementRequest request, CancellationToken ct = default);
         Task<AnnouncementResponse> UpdateAnnouncement(Guid userId, Guid announcementId, UpdateAnnouncementRequest request, CancellationToken ct = default);
-        Task DeleteAnnouncement(Guid userId, Guid announcementId, CancellationToken ct);
+        Task DeleteAnnouncement(Guid userId, Guid announcementId, CancellationToken ct = default);
         Task<List<AnnouncementResponse>> GetUsersAllAnnouncements(Guid userId, bool isPublished, CancellationToken ct = default);
         Task<PagedResult<AnnouncementResponse>> GetUsersPagedAnnouncements(Guid userId, int page,
             int pageSize,

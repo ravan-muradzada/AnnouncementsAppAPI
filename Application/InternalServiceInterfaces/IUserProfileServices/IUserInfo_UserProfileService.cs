@@ -10,10 +10,10 @@ namespace Application.InternalServiceInterfaces.IUserProfileServices
 {
     public interface IUserInfo_UserProfileService
     {
-        Task<UserProfileResponse> GetUser(Guid userId);
-        Task<UserProfileResponse> ChangeUsername(Guid userId, ChangeUsernameRequest request);
-        Task ChangeEmail(Guid userId, ChangeEmailRequest request);
-        Task<UserProfileResponse> VerifyEmailChange(Guid userId, VerifyEmailChangeRequest request);
-        Task ChangePassword(Guid userId, ChangePasswordRequest request);
+        Task<UserProfileResponse> GetUser(Guid userId, CancellationToken ct = default);
+        Task<UserProfileResponse> ChangeUsername(Guid userId, ChangeUsernameRequest request, CancellationToken ct = default);
+        Task ChangeEmail(Guid userId, ChangeEmailRequest request, CancellationToken ct = default);
+        Task<UserProfileResponse> VerifyEmailChange(Guid userId, VerifyEmailChangeRequest request, CancellationToken ct = default);
+        Task ChangePassword(Guid userId, ChangePasswordRequest request, CancellationToken ct = default);
     }
 }

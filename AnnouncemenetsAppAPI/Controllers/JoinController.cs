@@ -24,10 +24,10 @@ namespace AnnouncemenetsAppAPI.Controllers
 
         #region JoinAnnouncement
         [HttpPost("{announcementId:guid}")]
-        public async Task<IActionResult> JoinAnnouncement(Guid announcementId)
+        public async Task<IActionResult> JoinAnnouncement(Guid announcementId, CancellationToken ct = default)
         {
             Guid userId = User.GetUserId();
-            await _joinService.JoinAnnouncementAsync(announcementId, userId);
+            await _joinService.JoinAnnouncementAsync(announcementId, userId, ct);
             return Ok(new
             {
                 Message = "Successfully Joined!"
@@ -37,10 +37,10 @@ namespace AnnouncemenetsAppAPI.Controllers
 
         #region LeaveAnnouncement
         [HttpPost("{announcementId:guid}")]
-        public async Task<IActionResult> LeaveAnnouncement(Guid announcementId)
+        public async Task<IActionResult> LeaveAnnouncement(Guid announcementId, CancellationToken ct = default)
         {
             Guid userId = User.GetUserId();
-            await _joinService.LeaveAnnouncementAsync(announcementId, userId);
+            await _joinService.LeaveAnnouncementAsync(announcementId, userId, ct);
             return Ok(new
             {
                 Message = "Successfully Disjoined!"

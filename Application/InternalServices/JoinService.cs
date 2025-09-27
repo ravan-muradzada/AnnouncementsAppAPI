@@ -31,12 +31,12 @@ namespace Application.InternalServices
         #region JoinAnnouncementAsync
         public async Task JoinAnnouncementAsync(Guid announcementId, Guid userId, CancellationToken ct = default)
         {
-            if (!(await _announcementRepository.ExistsAsync(announcementId, null, default)) || (await _userManager.FindByIdAsync(userId.ToString()) is null))
+            if (!(await _announcementRepository.ExistsAsync(announcementId, null, ct)) || (await _userManager.FindByIdAsync(userId.ToString()) is null))
             {
                 throw new ObjectNotFoundException("User or announcement Not Found!");
             }
 
-            if (await _joinRepository.CheckJoin(announcementId, userId))
+            if (await _joinRepository.CheckJoin(announcementId, userId, ct))
             {
                 throw new ConflictException("User already joined this announcement.");
             }
@@ -46,21 +46,21 @@ namespace Application.InternalServices
                 ApplicationUserId = userId,
                 AnnouncementId = announcementId
             };
-            await _joinRepository.JoinAnnouncementAsync(announcementUser);
+            await _joinRepository.JoinAnnouncementAsync(announcementUser, ct);
         }
         #endregion
 
         #region LeaveAnnouncementAsync
         public async Task LeaveAnnouncementAsync(Guid announcementId, Guid userId, CancellationToken ct = default)
         {
-            if (!(await _announcementRepository.ExistsAsync(announcementId, null, default)) || (await _userManager.FindByIdAsync(userId.ToString()) is null))
+            if (!(await _announcementRepository.ExistsAsync(announcementId, null, ct)) || (await _userManager.FindByIdAsync(userId.ToString()) is null))
             {
                 throw new ObjectNotFoundException("User or announcement Not Found!");
             }
 
             AnnouncementUser? announcementUser = await _joinRepository.GetAnnouncementUserAsync(announcementId, userId) ?? throw new ObjectNotFoundException("You did not join to this announcement!");
 
-            await _joinRepository.LeaveAnnouncementAsync(announcementUser);
+            await _joinRepository.LeaveAnnouncementAsync(announcementUser, ct);
         }
         #endregion
     }

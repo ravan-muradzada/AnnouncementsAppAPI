@@ -25,7 +25,7 @@ namespace Application.InternalServices
         #endregion
 
         #region GetAllAnnouncements
-        public async Task<List<AnnouncementResponse>> GetAllAnnouncements(CancellationToken ct)
+        public async Task<List<AnnouncementResponse>> GetAllAnnouncements(CancellationToken ct = default)
         {
             List<Announcement> announcements = await _announcementRepository.GetAllAsync(null, true, ct);
 

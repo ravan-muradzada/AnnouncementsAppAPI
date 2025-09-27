@@ -43,7 +43,7 @@ namespace Application.InternalServices.UserProfileServices
         #endregion
 
         #region DeleteAnnouncement
-        public async Task DeleteAnnouncement(Guid userId, Guid announcementId, CancellationToken ct)
+        public async Task DeleteAnnouncement(Guid userId, Guid announcementId, CancellationToken ct = default)
         {
             Announcement? announcement = await _announcementRepository.GetByIdAsync(announcementId) ?? throw new ObjectNotFoundException("Announcemenet Not Found!");
 

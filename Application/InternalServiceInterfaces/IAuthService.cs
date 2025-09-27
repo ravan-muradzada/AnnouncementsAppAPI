@@ -13,11 +13,11 @@ namespace Application.InternalServiceInterfaces
         Task<RegisterResponse> Register(RegisterRequest request);
         Task SendOtp(SendOtpRequest request);
         Task<AuthenticatedResponse> VerifyOtp(VerifyOtpRequest request);
-        Task<AuthenticatedResponse?> Login(LoginRequest request);
-        Task<AuthenticatedResponse> VerifyTwoFactorAuth(VerifyTwoFactorAuthRequest request);
+        Task<AuthenticatedResponse?> Login(LoginRequest request, CancellationToken ct = default);
+        Task<AuthenticatedResponse> VerifyTwoFactorAuth(VerifyTwoFactorAuthRequest request, CancellationToken ct = default);
         Task<AuthenticatedResponse> GenerateNewRefreshToken(RefreshTokenRequest request);
-        Task ForgotPassword(ForgotPasswordRequest request);
-        Task ResetPassword(string token, ResetPasswordRequest request);
+        Task ForgotPassword(ForgotPasswordRequest request, CancellationToken ct = default);
+        Task ResetPassword(string token, ResetPasswordRequest request, CancellationToken ct = default);
         Task Logout(LogoutRequest request);
     }
 }

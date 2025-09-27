@@ -23,7 +23,7 @@ namespace Infrastructure.Repositories
         public async Task<Announcement> AddAync(Announcement announcement, CancellationToken ct = default)
         {
             await _dbContext.Announcements.AddAsync(announcement, ct);
-            await _dbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync(ct);
             return announcement;
         }
         #endregion
@@ -32,7 +32,7 @@ namespace Infrastructure.Repositories
         public async Task DeleteAsync(Announcement announcement, CancellationToken ct = default)
         {
             _dbContext.Announcements.Remove(announcement);
-            await _dbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync(ct);
         }
         #endregion
 
@@ -53,7 +53,7 @@ namespace Infrastructure.Repositories
 
             return await query.
                 OrderByDescending(a => a.CreatedAt)
-                .ToListAsync();
+                .ToListAsync(ct);
         }
         #endregion
 

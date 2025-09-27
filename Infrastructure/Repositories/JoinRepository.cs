@@ -24,52 +24,52 @@ namespace Infrastructure.Repositories
         #endregion
 
         #region JoinAnnouncementAsync
-        public async Task JoinAnnouncementAsync(AnnouncementUser announcementUser)
+        public async Task JoinAnnouncementAsync(AnnouncementUser announcementUser, CancellationToken ct = default)
         {
-            await _dbContext.AnnouncementUsers.AddAsync(announcementUser);
-            await _dbContext.SaveChangesAsync();
+            await _dbContext.AnnouncementUsers.AddAsync(announcementUser, ct);
+            await _dbContext.SaveChangesAsync(ct);
         }
         #endregion
 
         #region LeaveAnnouncementAsync
-        public async Task LeaveAnnouncementAsync(AnnouncementUser announcementUser)
+        public async Task LeaveAnnouncementAsync(AnnouncementUser announcementUser, CancellationToken ct = default)
         {
             _dbContext.AnnouncementUsers.Remove(announcementUser);
-            await _dbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync(ct);
         }
         #endregion
 
         #region CheckJoin
-        public async Task<bool> CheckJoin(Guid announcementId, Guid userId)
+        public async Task<bool> CheckJoin(Guid announcementId, Guid userId, CancellationToken ct = default)
         {
             var exists = await _dbContext.AnnouncementUsers
-                .FirstOrDefaultAsync(au => au.AnnouncementId == announcementId && au.ApplicationUserId == userId);
+                .FirstOrDefaultAsync(au => au.AnnouncementId == announcementId && au.ApplicationUserId == userId, ct);
             return exists is not null;
         }
         #endregion
 
         #region GetAnnouncementUserAsync
-        public async Task<AnnouncementUser?> GetAnnouncementUserAsync(Guid announcementId, Guid userId)
+        public async Task<AnnouncementUser?> GetAnnouncementUserAsync(Guid announcementId, Guid userId, CancellationToken ct = default)
         {
-            return await _dbContext.AnnouncementUsers.FirstOrDefaultAsync(au => au.AnnouncementId == announcementId && au.ApplicationUserId == userId);
+            return await _dbContext.AnnouncementUsers.FirstOrDefaultAsync(au => au.AnnouncementId == announcementId && au.ApplicationUserId == userId, ct);
         }
         #endregion
 
         #region GetAnnouncementUsersAsync
-        public async Task<List<AnnouncementUser>> GetAnnouncementUsers(Guid announcementId)
+        public async Task<List<AnnouncementUser>> GetAnnouncementUsers(Guid announcementId, CancellationToken ct = default)
         {
             return await _dbContext.AnnouncementUsers
                 .Where(au => au.AnnouncementId == announcementId)
                 .Include(au => au.User.UserName)
-                .ToListAsync();
+                .ToListAsync(ct);
         }
         #endregion
 
         #region DisjoinUserFromAnnouncement
-        public async Task DisjoinUserFromAnnouncement(AnnouncementUser announcementUser)
+        public async Task DisjoinUserFromAnnouncement(AnnouncementUser announcementUser, CancellationToken ct = default)
         {
             _dbContext.AnnouncementUsers.Remove(announcementUser);
-            await _dbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync(ct);
         }
         #endregion
     }

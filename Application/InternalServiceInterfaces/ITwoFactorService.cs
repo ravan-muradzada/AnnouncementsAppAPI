@@ -9,7 +9,7 @@ namespace Application.InternalServiceInterfaces
 {
     public interface ITwoFactorService
     {
-        Task SendTwoFactorCode(ApplicationUser user);
-        Task<bool> VerifyTwoFactorCode(ApplicationUser user, string code);
+        Task SendTwoFactorCode(ApplicationUser user, CancellationToken ct = default);
+        Task<bool> VerifyTwoFactorCode(ApplicationUser user, string code, CancellationToken ct = default);
     }
 }

@@ -39,7 +39,7 @@ namespace Application.InternalServices.UserProfileServices
         #endregion
 
         #region GetUser
-        public async Task<UserProfileResponse> GetUser(Guid userId)
+        public async Task<UserProfileResponse> GetUser(Guid userId, CancellationToken ct = default)
         {
             ApplicationUser? user = await _userManager.FindByIdAsync(userId.ToString());
             if (user is null) throw new ObjectNotFoundException("User not found");
@@ -48,7 +48,7 @@ namespace Application.InternalServices.UserProfileServices
         #endregion
 
         #region ChangeEmail
-        public async Task ChangeEmail(Guid userId, ChangeEmailRequest request)
+        public async Task ChangeEmail(Guid userId, ChangeEmailRequest request, CancellationToken ct = default)
         {
             string to = request.NewEmail;
             var user = await _userManager.FindByIdAsync(userId.ToString());
@@ -71,7 +71,7 @@ namespace Application.InternalServices.UserProfileServices
         #endregion
 
         #region VerifyEmailChange
-        public async Task<UserProfileResponse> VerifyEmailChange(Guid userId, VerifyEmailChangeRequest request)
+        public async Task<UserProfileResponse> VerifyEmailChange(Guid userId, VerifyEmailChangeRequest request, CancellationToken ct = default)
         {
             ApplicationUser? user = await _userManager.Users
                 .FirstOrDefaultAsync(u => u.Id == userId);
@@ -99,7 +99,7 @@ namespace Application.InternalServices.UserProfileServices
         #endregion
 
         #region ChangePassword
-        public async Task ChangePassword(Guid userId, ChangePasswordRequest request)
+        public async Task ChangePassword(Guid userId, ChangePasswordRequest request, CancellationToken ct = default)
         {
             string currentPassword = request.CurrentPassword;
             ApplicationUser? user = await _userManager.FindByIdAsync(userId.ToString());
@@ -120,7 +120,7 @@ namespace Application.InternalServices.UserProfileServices
         #endregion
 
         #region ChangeUsername
-        public async Task<UserProfileResponse> ChangeUsername(Guid userId, ChangeUsernameRequest request)
+        public async Task<UserProfileResponse> ChangeUsername(Guid userId, ChangeUsernameRequest request, CancellationToken ct = default)
         {
             ApplicationUser? user = await _userManager.FindByIdAsync(userId.ToString());
             if (user is null) throw new ObjectNotFoundException("User Not Found!");

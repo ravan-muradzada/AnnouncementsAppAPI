@@ -12,7 +12,7 @@ namespace Application.InternalServiceInterfaces
     public interface IAnnouncementService
     {
         Task<AnnouncementResponse> GetAnnouncement(Guid announcemenetId, CancellationToken ct = default);
-        Task<List<AnnouncementResponse>> GetAllAnnouncements(CancellationToken ct);
+        Task<List<AnnouncementResponse>> GetAllAnnouncements(CancellationToken ct = default);
         Task<PagedResult<AnnouncementResponse>> GetPagedAnnouncements(
             int page, 
             int pageSize, 

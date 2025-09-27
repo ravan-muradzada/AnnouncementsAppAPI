@@ -8,7 +8,7 @@ namespace Application.InternalServiceInterfaces.IUserProfileServices
 {
     public interface ITwoFactorAuth_UserProfileService
     {
-        Task EnableTwoFactorAuth(Guid userId);
-        Task DisableTwoFactorAuth(Guid userId);
+        Task EnableTwoFactorAuth(Guid userId, CancellationToken ct = default);
+        Task DisableTwoFactorAuth(Guid userId, CancellationToken ct = default);
     }
 }

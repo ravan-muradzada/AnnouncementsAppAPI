@@ -135,13 +135,9 @@ namespace Application.InternalServices
         #endregion
 
         #region Login
-        public async Task<AuthenticatedResponse?> Login(LoginRequest request)
+        public async Task<AuthenticatedResponse?> Login(LoginRequest request, CancellationToken ct = default)
         {
-            ApplicationUser? user = await _userManager.FindByNameAsync(request.Username);
-            if (user is null)
-            {
-                throw new InvalidCredentialsException("Either username or password is invalid!");
-            }
+            ApplicationUser? user = await _userManager.FindByNameAsync(request.Username) ?? throw new InvalidCredentialsException("Either username or password is invalid!");
 
             bool checkPassword = await _userManager.CheckPasswordAsync(user, request.Password);
 
@@ -157,7 +153,7 @@ namespace Application.InternalServices
 
             if (await _userManager.GetTwoFactorEnabledAsync(user))
             {
-                await _twoFactorService.SendTwoFactorCode(user);
+                await _twoFactorService.SendTwoFactorCode(user, ct);
                 return null;
             }
 
@@ -171,12 +167,12 @@ namespace Application.InternalServices
         #endregion
 
         #region VerifyTwoFactorAuth
-        public async Task<AuthenticatedResponse> VerifyTwoFactorAuth(VerifyTwoFactorAuthRequest request)
+        public async Task<AuthenticatedResponse> VerifyTwoFactorAuth(VerifyTwoFactorAuthRequest request, CancellationToken ct = default)
         {
             ApplicationUser? user = await _userManager.FindByEmailAsync(request.Email);
             if (user is null) throw new ObjectNotFoundException("User not found!");
 
-            if (!await _twoFactorService.VerifyTwoFactorCode(user, request.Code))
+            if (!await _twoFactorService.VerifyTwoFactorCode(user, request.Code, ct))
             {
                 throw new TwoFactorAuthFailedException("The provided code is wrong!");
             }
@@ -211,7 +207,7 @@ namespace Application.InternalServices
         #endregion
 
         #region ForgotPassword
-        public async Task ForgotPassword(ForgotPasswordRequest request)
+        public async Task ForgotPassword(ForgotPasswordRequest request, CancellationToken ct = default)
         {
 
             ApplicationUser? user = await _userManager.FindByEmailAsync(request.Email);
@@ -226,14 +222,11 @@ namespace Application.InternalServices
         #endregion
 
         #region ResetPassword
-        public async Task ResetPassword(string token, ResetPasswordRequest request)
+        public async Task ResetPassword(string token, ResetPasswordRequest request, CancellationToken ct = default)
         {
-            ApplicationUser? user = await _userManager.FindByEmailAsync(request.Email);
-
-            if (user is null) throw new ObjectNotFoundException("User not found!");
+            ApplicationUser? user = await _userManager.FindByEmailAsync(request.Email) ?? throw new ObjectNotFoundException("User not found!");
 
             IdentityResult result = await _userManager.ResetPasswordAsync(user, token, request.NewPassword);
-            await _refreshTokenService.InvalidateUserTokensAsync(user.Id);
             if (!result.Succeeded)
             {
                 throw new ValidationException(string.Join(", ", result.Errors.Select(e => e.Description)));

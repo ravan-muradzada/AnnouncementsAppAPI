@@ -26,7 +26,7 @@ namespace AnnouncemenetsAppAPI.Controllers
 
         #region GetAnnouncement
         [HttpGet("{announcementId:guid}")]
-        public async Task<IActionResult> GetAnnouncement(Guid announcementId, CancellationToken ct)
+        public async Task<IActionResult> GetAnnouncement(Guid announcementId, CancellationToken ct = default)
         {
             AnnouncementResponse response = await _announcementService.GetAnnouncement(announcementId, ct);
             return Ok(response);
@@ -35,7 +35,7 @@ namespace AnnouncemenetsAppAPI.Controllers
 
         #region GetAllAnnouncements
         [HttpGet]
-        public async Task<IActionResult> GetAllAnnouncements(CancellationToken ct)
+        public async Task<IActionResult> GetAllAnnouncements(CancellationToken ct = default)
         {
             List<AnnouncementResponse> response = await _announcementService.GetAllAnnouncements(ct);
             return Ok(response);

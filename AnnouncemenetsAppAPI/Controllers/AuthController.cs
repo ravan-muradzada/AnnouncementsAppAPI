@@ -55,9 +55,9 @@ namespace AnnouncemenetsAppAPI.Controllers
 
         #region Login
         [HttpPost]
-        public async Task<IActionResult> Login(LoginRequest request)
+        public async Task<IActionResult> Login(LoginRequest request, CancellationToken ct = default)
         {
-            AuthenticatedResponse? response = await _authService.Login(request);
+            AuthenticatedResponse? response = await _authService.Login(request, ct);
             if (response is null)
             {
                 return Ok(new
@@ -72,9 +72,9 @@ namespace AnnouncemenetsAppAPI.Controllers
 
         #region VerifyTwoFactorAuth
         [HttpPost]
-        public async Task<IActionResult> VerifyTwoFactorAuth(VerifyTwoFactorAuthRequest request)
+        public async Task<IActionResult> VerifyTwoFactorAuth(VerifyTwoFactorAuthRequest request, CancellationToken ct = default)
         {
-            AuthenticatedResponse response = await _authService.VerifyTwoFactorAuth(request);
+            AuthenticatedResponse response = await _authService.VerifyTwoFactorAuth(request, ct);
             return Ok(response);
         }
         #endregion
@@ -90,9 +90,9 @@ namespace AnnouncemenetsAppAPI.Controllers
 
         #region ForgotPassword
         [HttpPost]
-        public async Task<IActionResult> ForgotPassword(ForgotPasswordRequest request)
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordRequest request, CancellationToken ct = default)
         {
-            await _authService.ForgotPassword(request);
+            await _authService.ForgotPassword(request, ct);
             return Ok(new
             {
                 Message = "Email is sent, check your inbox!"
@@ -102,9 +102,9 @@ namespace AnnouncemenetsAppAPI.Controllers
 
         #region ResetPassword
         [HttpPut("{token}")]
-        public async Task<IActionResult> ResetPassword(string token, ResetPasswordRequest request)
+        public async Task<IActionResult> ResetPassword(string token, ResetPasswordRequest request, CancellationToken ct = default)
         {
-            await _authService.ResetPassword(token, request);
+            await _authService.ResetPassword(token, request, ct);
             return Ok(new
             {
                 Message = "Your password is successfully reset!"

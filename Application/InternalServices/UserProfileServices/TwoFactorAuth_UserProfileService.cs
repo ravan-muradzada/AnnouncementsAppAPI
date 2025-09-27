@@ -28,7 +28,7 @@ namespace Application.InternalServices.UserProfileServices
         #endregion
 
         #region EnableTwoFactorAuth 
-        public async Task EnableTwoFactorAuth(Guid userId)
+        public async Task EnableTwoFactorAuth(Guid userId, CancellationToken ct = default)
         {
             ApplicationUser? user = await _userManager.FindByIdAsync(userId.ToString());
             if (user is null) throw new ObjectNotFoundException("User not found!");
@@ -37,7 +37,7 @@ namespace Application.InternalServices.UserProfileServices
         #endregion
 
         #region DisableTwoFactorAuth
-        public async Task DisableTwoFactorAuth(Guid userId)
+        public async Task DisableTwoFactorAuth(Guid userId, CancellationToken ct = default)
         {
             ApplicationUser? user = await _userManager.FindByIdAsync(userId.ToString());
             if (user is null) throw new ObjectNotFoundException("User not found!");

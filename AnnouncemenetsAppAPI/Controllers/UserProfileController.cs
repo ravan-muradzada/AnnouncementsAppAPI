@@ -37,7 +37,7 @@ namespace AnnouncemenetsAppAPI.Controllers
         public async Task<IActionResult> GetUserProfile(CancellationToken ct = default)
         {
             Guid userId = User.GetUserId();
-            UserProfileResponse response = await _userInfo_UserProfileService.GetUser(userId);
+            UserProfileResponse response = await _userInfo_UserProfileService.GetUser(userId, ct);
             return Ok(response);
         }
         #endregion
@@ -47,7 +47,7 @@ namespace AnnouncemenetsAppAPI.Controllers
         public async Task<IActionResult> ChangeEmail(ChangeEmailRequest request, CancellationToken ct = default)
         {
             Guid userId = User.GetUserId();
-            await _userInfo_UserProfileService.ChangeEmail(userId, request);
+            await _userInfo_UserProfileService.ChangeEmail(userId, request, ct);
             return Ok(new
             {
                 Message = "Verification code has been sent to new email address. Please verify to complete email change."
@@ -60,7 +60,7 @@ namespace AnnouncemenetsAppAPI.Controllers
         public async Task<IActionResult> VerifyEmailChange(VerifyEmailChangeRequest request, CancellationToken ct = default)
         {
             Guid userId = User.GetUserId();
-            UserProfileResponse response = await _userInfo_UserProfileService.VerifyEmailChange(userId, request);
+            UserProfileResponse response = await _userInfo_UserProfileService.VerifyEmailChange(userId, request, ct);
             return Ok(response);
         }
         #endregion
@@ -70,7 +70,7 @@ namespace AnnouncemenetsAppAPI.Controllers
         public async Task<IActionResult> ChangeUsername(ChangeUsernameRequest request, CancellationToken ct = default)
         {
             Guid userId = User.GetUserId();
-            UserProfileResponse response = await _userInfo_UserProfileService.ChangeUsername(userId, request);
+            UserProfileResponse response = await _userInfo_UserProfileService.ChangeUsername(userId, request, ct);
             return Ok(response);
         }
         #endregion
@@ -80,7 +80,7 @@ namespace AnnouncemenetsAppAPI.Controllers
         public async Task<IActionResult> ChangePassword(ChangePasswordRequest request, CancellationToken ct = default)
         {
             Guid userId = User.GetUserId();
-            await _userInfo_UserProfileService.ChangePassword(userId, request);
+            await _userInfo_UserProfileService.ChangePassword(userId, request, ct);
             return Ok(new
             {
                 Message = "Password has been changed successfully!"
@@ -93,7 +93,7 @@ namespace AnnouncemenetsAppAPI.Controllers
         public async Task<IActionResult> EnableTwoFactorAuth(CancellationToken ct = default)
         {
             Guid userId = User.GetUserId();
-            await _twoFactorAuth_UserProfileService.EnableTwoFactorAuth(userId);
+            await _twoFactorAuth_UserProfileService.EnableTwoFactorAuth(userId, ct);
 
             return Ok(new
             {
@@ -107,7 +107,7 @@ namespace AnnouncemenetsAppAPI.Controllers
         public async Task<IActionResult> DisableTwoFactorAuth(CancellationToken ct = default)
         {
             Guid userId = User.GetUserId();
-            await _twoFactorAuth_UserProfileService.DisableTwoFactorAuth(userId);
+            await _twoFactorAuth_UserProfileService.DisableTwoFactorAuth(userId, ct);
 
             return Ok(new
             {
@@ -145,7 +145,7 @@ namespace AnnouncemenetsAppAPI.Controllers
 
         #region CreateAnnouncement
         [HttpPost]
-        public async Task<IActionResult> CreateAnnouncement(CreateAnnouncementRequest request, CancellationToken ct)
+        public async Task<IActionResult> CreateAnnouncement(CreateAnnouncementRequest request, CancellationToken ct = default)
         {
             Guid userId = User.GetUserId();
             AnnouncementResponse response = await _announcement_UserProfileService.CreateAnnouncement(userId, request, ct);
@@ -155,7 +155,7 @@ namespace AnnouncemenetsAppAPI.Controllers
 
         #region DeleteAnnouncement
         [HttpDelete("{announcementId:guid}")]
-        public async Task<IActionResult> DeleteAnnouncement(Guid announcementId, CancellationToken ct)
+        public async Task<IActionResult> DeleteAnnouncement(Guid announcementId, CancellationToken ct = default)
         {
             Guid userId = User.GetUserId();
             await _announcement_UserProfileService.DeleteAnnouncement(userId, announcementId, ct);
@@ -165,7 +165,7 @@ namespace AnnouncemenetsAppAPI.Controllers
 
         #region UpdateAnnouncement
         [HttpPut("{announcementId:guid}")]
-        public async Task<IActionResult> UpdateAnnouncement(Guid announcementId, UpdateAnnouncementRequest request, CancellationToken ct)
+        public async Task<IActionResult> UpdateAnnouncement(Guid announcementId, UpdateAnnouncementRequest request, CancellationToken ct = default)
         {
             Guid userId = User.GetUserId();
             AnnouncementResponse response = await _announcement_UserProfileService.UpdateAnnouncement(userId, announcementId, request, ct);

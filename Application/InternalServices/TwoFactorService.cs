@@ -26,7 +26,7 @@ namespace Application.InternalServices
         #endregion
 
         #region SendTwoFactorCode
-        public async Task SendTwoFactorCode(ApplicationUser user)
+        public async Task SendTwoFactorCode(ApplicationUser user, CancellationToken ct = default)
         {
             var token = await _userManager.GenerateTwoFactorTokenAsync(user, TokenOptions.DefaultEmailProvider);
             await _emailService.SendEmail(user.Email!, "Two factor authentication code", token);
@@ -34,7 +34,7 @@ namespace Application.InternalServices
         #endregion
 
         #region VerifyTwoFactorCode
-        public async Task<bool> VerifyTwoFactorCode(ApplicationUser user, string code)
+        public async Task<bool> VerifyTwoFactorCode(ApplicationUser user, string code, CancellationToken ct = default)
         {
             return await _userManager.VerifyTwoFactorTokenAsync(
             user, TokenOptions.DefaultEmailProvider, code);
