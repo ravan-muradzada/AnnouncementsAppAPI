@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace Application.DTOs.Auth.Response
 {
-    public sealed record AuthenticatedResponse(string RefreshToken, string AccessToken);
+    public sealed record AuthenticatedResponse(string AccessToken, string RefreshToken);
 }

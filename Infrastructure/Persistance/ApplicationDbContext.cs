@@ -11,11 +11,16 @@ namespace Infrastructure.Persistance
 {
     public class ApplicationDbContext: IdentityDbContext<ApplicationUser, ApplicationRole, Guid>
     {
+        #region Constructor
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
+        #endregion
 
+        #region DbSets
         public DbSet<Announcement> Announcements { get; set; }
         public DbSet<AnnouncementUser> AnnouncementUsers { get; set; }
+        #endregion
 
+        #region OnModelCreating
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -67,5 +72,14 @@ namespace Infrastructure.Persistance
                 .WithMany(au => au.JoinedAnnouncements)
                 .HasForeignKey(au => au.ApplicationUserId);
         }
+        #endregion
+
+        #region OnModelConfiguring
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseSqlite("Data Source=app.db");
+        }
+        #endregion
+
     }
 }

@@ -18,6 +18,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using StackExchange.Redis;
 using System.Text;
+using DotNetEnv;
 
 namespace AnnouncemenetsAppAPI.StartupExtensions
 {
@@ -44,7 +45,7 @@ namespace AnnouncemenetsAppAPI.StartupExtensions
             #region DbContext
             services.AddDbContext<ApplicationDbContext>(options =>
             {
-                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
+                options.UseSqlite(configuration.GetConnectionString("DefaultConnection"));
             });
             #endregion
 

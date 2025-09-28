@@ -2,7 +2,9 @@ using AnnouncemenetsAppAPI.Middlewares;
 using AnnouncemenetsAppAPI.StartupExtensions;
 using Infrastructure.Persistance;
 using Microsoft.EntityFrameworkCore;
+using DotNetEnv;
 
+Env.Load();
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.ConfigureServices(builder.Configuration);
