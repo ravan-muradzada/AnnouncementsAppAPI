@@ -27,7 +27,7 @@ namespace Application.InternalServices
         #region GetAllAnnouncements
         public async Task<List<AnnouncementResponse>> GetAllAnnouncements(CancellationToken ct = default)
         {
-            List<Announcement> announcements = await _announcementRepository.GetAllAsync(null, true, ct);
+            List<Announcement> announcements = await _announcementRepository.GetAllAsync(null, true, false, ct);
 
             return _mapper.Map<List<AnnouncementResponse>>(announcements);
         }
@@ -36,7 +36,7 @@ namespace Application.InternalServices
         #region GetAnnouncement
         public async Task<AnnouncementResponse> GetAnnouncement(Guid announcemenetId, CancellationToken ct = default)
         {
-            Announcement? announcement = await _announcementRepository.GetByIdAsync(announcemenetId, null, true, ct) ?? throw new ObjectNotFoundException("Announcement Not Found!");
+            Announcement? announcement = await _announcementRepository.GetByIdAsync(announcemenetId, null, true, false, ct) ?? throw new ObjectNotFoundException("Announcement Not Found!");
 
             return _mapper.Map<AnnouncementResponse>(announcement);
         }
@@ -45,7 +45,7 @@ namespace Application.InternalServices
         #region GetPagedAnnouncements
         public async Task<PagedResult<AnnouncementResponse>> GetPagedAnnouncements(int page, int pageSize, string? search = null, string? category = null, bool? isPinned = null, CancellationToken ct = default)
         {
-            var pagedResult = await _announcementRepository.GetPagedAsync(page, pageSize, null, true, search, category, isPinned, ct);
+            var pagedResult = await _announcementRepository.GetPagedAsync(page, pageSize, null, true, search, category, isPinned, false, ct);
             return _mapper.Map<PagedResult<AnnouncementResponse>>(pagedResult);
         }
         #endregion

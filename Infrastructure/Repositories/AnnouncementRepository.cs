@@ -37,7 +37,7 @@ namespace Infrastructure.Repositories
         #endregion
 
         #region GetAllAsync
-        public async Task<List<Announcement>> GetAllAsync(Guid? userId = null, bool? isPublished = null, CancellationToken ct = default)
+        public async Task<List<Announcement>> GetAllAsync(Guid? userId = null, bool? isPublished = null, bool? isExpired = null, CancellationToken ct = default)
         {
             var query = _dbContext.Announcements.AsQueryable();
 
@@ -51,6 +51,13 @@ namespace Infrastructure.Repositories
                 query = query.Where(a => a.IsPublished == isPublished);
             }
 
+            if (isExpired is not null)
+            {
+                if (isExpired is false)
+                    query = query.Where(a => a.ExpiresAt > DateTime.UtcNow);
+                else query = query.Where(a => a.ExpiresAt < DateTime.UtcNow);
+            }
+
             return await query.
                 OrderByDescending(a => a.CreatedAt)
                 .ToListAsync(ct);
@@ -58,7 +65,7 @@ namespace Infrastructure.Repositories
         #endregion
 
         #region GetByIdAsync
-        public async Task<Announcement?> GetByIdAsync(Guid announcementId, Guid? userId = null, bool? isPublished = null, CancellationToken ct = default)
+        public async Task<Announcement?> GetByIdAsync(Guid announcementId, Guid? userId = null, bool? isPublished = null, bool? isExpired = null, CancellationToken ct = default)
         {
             var query = _dbContext.Announcements.AsQueryable();
 
@@ -73,44 +80,59 @@ namespace Infrastructure.Repositories
             {
                 query = query.Where(a => a.IsPublished == isPublished);
             }
+
+            if (isExpired is not null)
+            {
+                if (isExpired is false)
+                    query = query.Where(a => a.ExpiresAt > DateTime.UtcNow);
+                else query = query.Where(a => a.ExpiresAt < DateTime.UtcNow);
+            }
+
             return await query.FirstOrDefaultAsync(ct);
         }
         #endregion
 
         #region GetPagedAsync
-        public async Task<PagedResult<Announcement>> GetPagedAsync(int page, int pageSize, Guid? userId = null, bool? isPublished = null, string? search = null, string? category = null, bool? isPinned = null, CancellationToken ct = default)
+        public async Task<PagedResult<Announcement>> GetPagedAsync(int page, int pageSize, Guid? userId = null, bool? isPublished = null, string? search = null, string? category = null, bool? isPinned = null, bool? isExpired = null, CancellationToken ct = default)
         {
-            var announcements = _dbContext.Announcements.AsQueryable();
+            var query = _dbContext.Announcements.AsQueryable();
 
 
             if (userId is not null)
             {
-                announcements = announcements.Where(a => a.AuthorId == userId);
+                query = query.Where(a => a.AuthorId == userId);
             }
 
             if (isPublished is not null)
             {
-                announcements = announcements.Where(a => a.IsPublished == isPublished);
+                query = query.Where(a => a.IsPublished == isPublished);
             }
 
             if (search is not null)
             {
-                announcements = announcements.Where(a => a.Title.Contains(search) || a.Content.Contains(search));
+                query = query.Where(a => a.Title.Contains(search) || a.Content.Contains(search));
             }
 
             if (category is not null)
             {
-                announcements = announcements.Where(a => a.Category == category);
+                query = query.Where(a => a.Category == category);
             }
 
             if (isPinned.HasValue)
             {
-                announcements = announcements.Where(a => a.IsPinned == isPinned);
+                query = query.Where(a => a.IsPinned == isPinned);
             }
 
-            var totalCount = await announcements.CountAsync(ct);
+            if (isExpired is not null)
+            {
+                if (isExpired is false)
+                    query = query.Where(a => a.ExpiresAt > DateTime.UtcNow);
+                else query = query.Where(a => a.ExpiresAt < DateTime.UtcNow);
+            }
 
-            var items = await announcements
+            var totalCount = await query.CountAsync(ct);
+
+            var items = await query
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .OrderByDescending(a => a.CreatedAt)
@@ -140,7 +162,7 @@ namespace Infrastructure.Repositories
         #endregion
 
         #region ExistsAsync
-        public async Task<bool> ExistsAsync(Guid announcementId, Guid? userId = null, CancellationToken ct = default)
+        public async Task<bool> ExistsAsync(Guid announcementId, Guid? userId = null, bool? isExpired = null, CancellationToken ct = default)
         {
             var query = _dbContext.Announcements.AsQueryable();
 
@@ -149,6 +171,13 @@ namespace Infrastructure.Repositories
             if (userId is not null)
             {
                 query = query.Where(a => a.AuthorId == userId);
+            }
+
+            if (isExpired is not null)
+            {
+                if (isExpired is false)
+                    query = query.Where(a => a.ExpiresAt > DateTime.UtcNow);
+                else query = query.Where(a => a.ExpiresAt < DateTime.UtcNow);
             }
 
             return await query.AnyAsync(ct);

@@ -29,9 +29,9 @@ namespace Application.InternalServices.UserProfileServices
         #region GetJoinedUsersList
         public async Task<List<JoinedUserResponse>> GetJoinedUsersList(Guid authorId, Guid announcementId, CancellationToken ct = default)
         {
-            if(await _announcementRepository.ExistsAsync(announcementId, authorId, ct))
+            if(await _announcementRepository.ExistsAsync(announcementId, authorId, null, ct))
             {
-                throw new ObjectNotFoundException("Announcement not found");
+                throw new ObjectNotFoundException("Announcement not found!");
             }
 
             List<AnnouncementUser> announcementUsers = await _joinRepository.GetAnnouncementUsers(announcementId);
@@ -48,9 +48,9 @@ namespace Application.InternalServices.UserProfileServices
         #region RemoveUserFromGroup
         public async Task RemoveUserFromGroup(Guid authorId, Guid announcementId, Guid userId, CancellationToken ct = default)
         {
-            if (await _announcementRepository.ExistsAsync(announcementId, authorId, ct))
+            if (await _announcementRepository.ExistsAsync(announcementId, authorId, null, ct))
             {
-                throw new ObjectNotFoundException("Announcement not found");
+                throw new ObjectNotFoundException("Announcement not found or expired!");
             }
 
             AnnouncementUser? announcementUser = await _joinRepository.GetAnnouncementUserAsync(announcementId, userId) ?? throw new ObjectNotFoundException("User is not in this announcement!");

@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace Application.DTOs.Announcement.Response
 {
-    public sealed record AnnouncementResponse(Guid Id, string Title, string Content, string Category, DateTime? ExpiresAt, DateTime? PublishedAt, bool isPublished, bool isPinned);
+    public sealed record AnnouncementResponse(Guid Id, string Title, string Content, string Category, bool IsExpired, DateTime? ExpiresAt, DateTime? PublishedAt, bool IsPublished, bool IsPinned);
 }

@@ -31,9 +31,9 @@ namespace Application.InternalServices
         #region JoinAnnouncementAsync
         public async Task JoinAnnouncementAsync(Guid announcementId, Guid userId, CancellationToken ct = default)
         {
-            if (!(await _announcementRepository.ExistsAsync(announcementId, null, ct)) || (await _userManager.FindByIdAsync(userId.ToString()) is null))
+            if (!(await _announcementRepository.ExistsAsync(announcementId, null, false, ct)) || (await _userManager.FindByIdAsync(userId.ToString()) is null))
             {
-                throw new ObjectNotFoundException("User or announcement Not Found!");
+                throw new ObjectNotFoundException("User or announcement not found or announcement expired!");
             }
 
             if (await _joinRepository.CheckJoin(announcementId, userId, ct))
@@ -53,9 +53,9 @@ namespace Application.InternalServices
         #region LeaveAnnouncementAsync
         public async Task LeaveAnnouncementAsync(Guid announcementId, Guid userId, CancellationToken ct = default)
         {
-            if (!(await _announcementRepository.ExistsAsync(announcementId, null, ct)) || (await _userManager.FindByIdAsync(userId.ToString()) is null))
+            if (!(await _announcementRepository.ExistsAsync(announcementId, null, false, ct)) || (await _userManager.FindByIdAsync(userId.ToString()) is null))
             {
-                throw new ObjectNotFoundException("User or announcement Not Found!");
+                throw new ObjectNotFoundException("User or announcement not found or announcement expired!");
             }
 
             AnnouncementUser? announcementUser = await _joinRepository.GetAnnouncementUserAsync(announcementId, userId) ?? throw new ObjectNotFoundException("You did not join to this announcement!");

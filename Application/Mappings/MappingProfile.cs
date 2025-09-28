@@ -26,7 +26,11 @@ namespace Application.Mappings
         private void ConfigureAnnouncementMappings()
         {
             CreateMap<CreateAnnouncementRequest, Announcement>();
-            CreateMap<Announcement, AnnouncementResponse>();
+            CreateMap<Announcement, AnnouncementResponse>()
+                .ForMember(
+                    dest => dest.IsExpired,
+                    opt => opt.MapFrom(src => src.ExpiresAt < DateTime.UtcNow)
+                );
             CreateMap<UpdateAnnouncementRequest, Announcement>();
         }
     }
