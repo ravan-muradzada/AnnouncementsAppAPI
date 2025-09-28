@@ -365,3 +365,6 @@ FodyWeavers.xsd
 Infrastructure/Migrations
 /ToDoList.txt
 /AnnouncemenetsAppAPI/app.db
+/AnnouncemenetsAppAPI/app.db-wal
+/AnnouncemenetsAppAPI/app.db-shm
+/AnnouncemenetsAppAPI/.env
