@@ -51,7 +51,7 @@ namespace Application.InternalServices
             string pattern = $"Refresh_Token:*:{refreshToken}";
             IEnumerable<string> result = _redisRepository.GetByPattern(pattern);
             
-            if (result.Count() == 0)
+            if (!result.Any())
             {
                 throw new ObjectNotFoundException("Refresh Token Not Found!");
             }

@@ -103,7 +103,13 @@ namespace Application.InternalServices.UserProfileServices
             bool? isPinned = null, CancellationToken ct = default)
         {
             var announcements = await _announcementRepository.GetPagedAsync(page, pageSize, userId, isPublished, search, category, isPinned, null, ct);
-            return _mapper.Map<PagedResult<AnnouncementResponse>>(announcements);
+            return new PagedResult<AnnouncementResponse>
+            {
+                Items = _mapper.Map<List<AnnouncementResponse>>(announcements.Items),
+                TotalCount = announcements.TotalCount,
+                PageSize = announcements.PageSize,
+                CurrentPageNumber = announcements.CurrentPageNumber
+            };
         }
         #endregion
 

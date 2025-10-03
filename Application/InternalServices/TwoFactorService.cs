@@ -12,7 +12,7 @@ namespace Application.InternalServices
 {
     public class TwoFactorService : ITwoFactorService
     {
-        #region fields
+        #region Fields
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IEmailService _emailService;
         #endregion

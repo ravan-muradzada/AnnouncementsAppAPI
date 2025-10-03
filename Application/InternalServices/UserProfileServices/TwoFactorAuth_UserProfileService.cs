@@ -1,16 +1,7 @@
-﻿using Application.ExternalServiceInterfaces;
-using Application.InternalServiceInterfaces;
-using Application.InternalServiceInterfaces.IUserProfileServices;
-using AutoMapper;
+﻿using Application.InternalServiceInterfaces.IUserProfileServices;
 using Domain.CustomExceptions;
 using Domain.Entities;
-using Domain.RepositoryInterfaces;
 using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.InternalServices.UserProfileServices
 {
@@ -30,8 +21,7 @@ namespace Application.InternalServices.UserProfileServices
         #region EnableTwoFactorAuth 
         public async Task EnableTwoFactorAuth(Guid userId, CancellationToken ct = default)
         {
-            ApplicationUser? user = await _userManager.FindByIdAsync(userId.ToString());
-            if (user is null) throw new ObjectNotFoundException("User not found!");
+            ApplicationUser? user = await _userManager.FindByIdAsync(userId.ToString()) ?? throw new ObjectNotFoundException("User not found!");
             await _userManager.SetTwoFactorEnabledAsync(user, true);
         }
         #endregion
@@ -39,8 +29,7 @@ namespace Application.InternalServices.UserProfileServices
         #region DisableTwoFactorAuth
         public async Task DisableTwoFactorAuth(Guid userId, CancellationToken ct = default)
         {
-            ApplicationUser? user = await _userManager.FindByIdAsync(userId.ToString());
-            if (user is null) throw new ObjectNotFoundException("User not found!");
+            ApplicationUser? user = await _userManager.FindByIdAsync(userId.ToString()) ?? throw new ObjectNotFoundException("User not found!");
             await _userManager.SetTwoFactorEnabledAsync(user, false);
         }
         #endregion

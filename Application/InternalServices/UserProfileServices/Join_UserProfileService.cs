@@ -29,12 +29,12 @@ namespace Application.InternalServices.UserProfileServices
         #region GetJoinedUsersList
         public async Task<List<JoinedUserResponse>> GetJoinedUsersList(Guid authorId, Guid announcementId, CancellationToken ct = default)
         {
-            if(await _announcementRepository.ExistsAsync(announcementId, authorId, null, ct))
+            if(!await _announcementRepository.ExistsAsync(announcementId, authorId, null, ct))
             {
                 throw new ObjectNotFoundException("Announcement not found!");
             }
 
-            List<AnnouncementUser> announcementUsers = await _joinRepository.GetAnnouncementUsers(announcementId);
+            List<AnnouncementUser> announcementUsers = await _joinRepository.GetAnnouncementUsers(announcementId, ct);
         
             return announcementUsers
                 .Select(au => new JoinedUserResponse(
@@ -48,14 +48,14 @@ namespace Application.InternalServices.UserProfileServices
         #region RemoveUserFromGroup
         public async Task RemoveUserFromGroup(Guid authorId, Guid announcementId, Guid userId, CancellationToken ct = default)
         {
-            if (await _announcementRepository.ExistsAsync(announcementId, authorId, null, ct))
+            if (!await _announcementRepository.ExistsAsync(announcementId, authorId, null, ct))
             {
                 throw new ObjectNotFoundException("Announcement not found or expired!");
             }
 
-            AnnouncementUser? announcementUser = await _joinRepository.GetAnnouncementUserAsync(announcementId, userId) ?? throw new ObjectNotFoundException("User is not in this announcement!");
+            AnnouncementUser? announcementUser = await _joinRepository.GetAnnouncementUserAsync(announcementId, userId, ct) ?? throw new ObjectNotFoundException("User is not in this announcement!");
 
-            await _joinRepository.LeaveAnnouncementAsync(announcementUser);
+            await _joinRepository.LeaveAnnouncementAsync(announcementUser, ct);
         }
         #endregion
     }

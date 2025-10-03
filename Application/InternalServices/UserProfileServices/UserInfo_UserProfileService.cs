@@ -41,22 +41,16 @@ namespace Application.InternalServices.UserProfileServices
         #region GetUser
         public async Task<UserProfileResponse> GetUser(Guid userId, CancellationToken ct = default)
         {
-            ApplicationUser? user = await _userManager.FindByIdAsync(userId.ToString());
-            if (user is null) throw new ObjectNotFoundException("User not found");
+            ApplicationUser? user = await _userManager.FindByIdAsync(userId.ToString()) ?? throw new ObjectNotFoundException("User not found!");
             return _mapper.Map<UserProfileResponse>(user);
         }
         #endregion
 
         #region ChangeEmail
-        public async Task ChangeEmail(Guid userId, ChangeEmailRequest request, CancellationToken ct = default)
+        public async Task ChangeEmail(Guid userId, ChangeEmailRequest request)
         {
             string to = request.NewEmail;
-            var user = await _userManager.FindByIdAsync(userId.ToString());
-
-            if (user is null)
-            {
-                throw new ObjectNotFoundException("User not found!");
-            }
+            var user = await _userManager.FindByIdAsync(userId.ToString()) ?? throw new ObjectNotFoundException("User not found!");
 
             string otp = new Random().Next(100000, 999999).ToString();
 
@@ -74,15 +68,11 @@ namespace Application.InternalServices.UserProfileServices
         public async Task<UserProfileResponse> VerifyEmailChange(Guid userId, VerifyEmailChangeRequest request, CancellationToken ct = default)
         {
             ApplicationUser? user = await _userManager.Users
-                .FirstOrDefaultAsync(u => u.Id == userId);
+                .FirstOrDefaultAsync(u => u.Id == userId, ct) ?? throw new ObjectNotFoundException("User not found!");
+            
 
+            string? cachedEmailCandidate = await _redisRepository.GetStringAsync($"email_change_candidate_{userId}") ?? throw new ObjectNotFoundException("New email candidate not found");
             string? cachedOtp = await _redisRepository.GetStringAsync($"email_change_otp_{userId}");
-            string? cachedEmailCandidate = await _redisRepository.GetStringAsync($"email_change_candidate_{userId}");
-
-            if (user is null || cachedEmailCandidate is null)
-            {
-                throw new ObjectNotFoundException("User or New Email Candidate Not Found!");
-            }
 
             if (cachedOtp is null || !string.Equals(cachedOtp, request.OTP))
             {
@@ -102,8 +92,7 @@ namespace Application.InternalServices.UserProfileServices
         public async Task ChangePassword(Guid userId, ChangePasswordRequest request, CancellationToken ct = default)
         {
             string currentPassword = request.CurrentPassword;
-            ApplicationUser? user = await _userManager.FindByIdAsync(userId.ToString());
-            if (user is null) throw new ObjectNotFoundException("User Not Found!");
+            ApplicationUser? user = await _userManager.FindByIdAsync(userId.ToString()) ?? throw new ObjectNotFoundException("User not found!");
 
             var isCurrentPasswordValid = await _userManager.CheckPasswordAsync(user, currentPassword);
             if (!isCurrentPasswordValid) throw new InvalidCredentialsException("Current password is incorrect!");
@@ -122,8 +111,7 @@ namespace Application.InternalServices.UserProfileServices
         #region ChangeUsername
         public async Task<UserProfileResponse> ChangeUsername(Guid userId, ChangeUsernameRequest request, CancellationToken ct = default)
         {
-            ApplicationUser? user = await _userManager.FindByIdAsync(userId.ToString());
-            if (user is null) throw new ObjectNotFoundException("User Not Found!");
+            ApplicationUser? user = await _userManager.FindByIdAsync(userId.ToString()) ?? throw new ObjectNotFoundException("User not found!");
 
             string newUsername = request.NewUsername;
 

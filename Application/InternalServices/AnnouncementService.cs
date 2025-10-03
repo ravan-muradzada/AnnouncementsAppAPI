@@ -46,7 +46,13 @@ namespace Application.InternalServices
         public async Task<PagedResult<AnnouncementResponse>> GetPagedAnnouncements(int page, int pageSize, string? search = null, string? category = null, bool? isPinned = null, CancellationToken ct = default)
         {
             var pagedResult = await _announcementRepository.GetPagedAsync(page, pageSize, null, true, search, category, isPinned, false, ct);
-            return _mapper.Map<PagedResult<AnnouncementResponse>>(pagedResult);
+            return new PagedResult<AnnouncementResponse>
+            {
+                Items = _mapper.Map<List<AnnouncementResponse>>(pagedResult.Items),
+                TotalCount = pagedResult.TotalCount,
+                PageSize = pagedResult.PageSize,
+                CurrentPageNumber = pagedResult.CurrentPageNumber,
+            };
         }
         #endregion
     }

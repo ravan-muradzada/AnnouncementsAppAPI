@@ -47,7 +47,7 @@ namespace AnnouncemenetsAppAPI.Controllers
         public async Task<IActionResult> ChangeEmail(ChangeEmailRequest request, CancellationToken ct = default)
         {
             Guid userId = User.GetUserId();
-            await _userInfo_UserProfileService.ChangeEmail(userId, request, ct);
+            await _userInfo_UserProfileService.ChangeEmail(userId, request);
             return Ok(new
             {
                 Message = "Verification code has been sent to new email address. Please verify to complete email change."

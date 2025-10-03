@@ -52,6 +52,10 @@ namespace AnnouncemenetsAppAPI.Controllers
             [FromQuery] bool? isPinned = null,
             CancellationToken ct = default)
         {
+            if (page <= 0 || pageSize <= 0)
+            {
+                return BadRequest("Page and PageSize must be greater than zero.");
+            }
             var response = await _announcementService.GetPagedAnnouncements(page, pageSize, search, category, isPinned, ct);
             return Ok(response);
         }
